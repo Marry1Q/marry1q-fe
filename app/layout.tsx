@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { ShareInitializer } from "@/features/invitation/components";
 
 export const metadata: Metadata = {
   title: "Marry1Q",
@@ -53,6 +54,7 @@ export default function RootLayout({
         }}
       >
         <Toaster richColors position="top-center" />
+        <ShareInitializer />
         {children}
       </body>
     </html>
