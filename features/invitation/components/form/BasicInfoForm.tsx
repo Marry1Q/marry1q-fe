@@ -87,7 +87,7 @@ export function BasicInfoForm({
                   updateInvitationData("weddingDate", date)
                 }}
                 onTimeChange={(time) => {
-                  // 시간 변경은 onDateChange에서 이미 처리됨
+                  updateInvitationData("weddingTime", time)
                 }}
               />
             </div>
