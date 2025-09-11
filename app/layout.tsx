@@ -2,7 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { ShareInitializer } from "@/features/invitation/components";
+import { ShareInitializer } from "@/features/invitation/components/kakaoShare";
 
 export const metadata: Metadata = {
   title: "Marry1Q",
