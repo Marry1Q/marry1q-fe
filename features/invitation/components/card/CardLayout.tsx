@@ -59,6 +59,13 @@ export function CardLayout({ invitationData, uploadedPhotos, shareImage, isPrevi
     }
   };
 
+  const getCurrentTimeString = (): string => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
   const parseParents = (parentsString: string): { father: string; mother: string } => {
     const parts = parentsString.split(" · ");
     return {
@@ -79,7 +86,7 @@ export function CardLayout({ invitationData, uploadedPhotos, shareImage, isPrevi
       {/* Info Section */}
       <CardInfo 
         weddingDate={parseWeddingDate(invitationData.weddingDate || "")}
-        weddingTime={invitationData.weddingTime || "14:00"}
+        weddingTime={invitationData.weddingTime || getCurrentTimeString()}
         venue={invitationData.venue || invitationData.weddingLocation || ""}
         venueAddress={invitationData.venueAddress || ""}
         message={invitationData.message || "저희 두 사람이 평생을 함께하기 위해 서로의 반려자가 되려 합니다."}
