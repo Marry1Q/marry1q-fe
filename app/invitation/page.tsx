@@ -14,7 +14,6 @@ import {
   PrimaryInvitationPreview, 
   InvitationList, 
   InvitationFilters, 
-  ShareMenu,
 } from "@/features/invitation/components"
 import { useInvitationData } from "@/lib/hooks/useInvitationData"
 import { useAuth } from "@/lib/hooks/useAuth"
@@ -96,17 +95,6 @@ export default function InvitationPage() {
     }
   }
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const linkUrl = primaryInvitation ? `${origin}/invitation/public/${(primaryInvitation as any).coupleSlug ?? ''}` : origin;
-  const templateArgs = primaryInvitation ? {
-    title: primaryInvitation.title,
-    date: primaryInvitation.weddingDate,
-    time: (primaryInvitation as any).weddingTime,
-    venue: (primaryInvitation as any).venue ?? (primaryInvitation as any).weddingHall,
-    imageUrl: (primaryInvitation as any).mainImageUrl,
-    linkUrl,
-  } : undefined;
-
   return (
     <MainLayout>
       <div className="container mx-auto p-4">
@@ -114,16 +102,11 @@ export default function InvitationPage() {
           <h1 className="text-3xl font-bold" style={{ fontFamily: "Hana2-CM" }}>
             모바일 청첩장
           </h1>
-          <div className="flex items-center gap-2">
-            {primaryInvitation && (
-              <ShareMenu templateId={124176} templateArgs={templateArgs} linkUrl={linkUrl} />
-            )}
-            <Link href="/invitation/create">
-              <Button style={{ backgroundColor: colors.primary.main }}>
-                <Plus className="w-4 h-4 mr-2" />새 청첩장 만들기
-              </Button>
-            </Link>
-          </div>
+          <Link href="/invitation/create">
+            <Button style={{ backgroundColor: colors.primary.main }}>
+              <Plus className="w-4 h-4 mr-2" />새 청첩장 만들기
+            </Button>
+          </Link>
         </div>
 
         <p className="text-gray-600 mb-6">아름다운 모바일 청첩장을 만들어 소중한 사람들을 초대하세요.</p>

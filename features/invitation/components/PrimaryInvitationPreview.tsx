@@ -7,6 +7,7 @@ import Link from "next/link";
 import { colors } from "@/constants/colors";
 import { useState } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { ShareMenu } from "./kakaoShare";
 
 interface PrimaryInvitation {
   id: number;
@@ -33,19 +34,15 @@ interface PrimaryInvitationPreviewProps {
 export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPreviewProps) {
   const [copied, setCopied] = useState(false);
   const { coupleSlug, coupleInfo } = useAuth();
-
-  const handleShare = async () => {
-    // coupleInfo에서 urlSlug를 우선 사용, 없으면 useAuth의 coupleSlug 사용
-    const shareUrl = `${window.location.origin}/invitation/${coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id}`;
-    
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
-  };
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const shareUrl = `${origin}/invitation/${coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id}`;
+  const templateArgs = {
+    title: invitation.title,
+    date: invitation.weddingDate,
+    venue: invitation.weddingLocation,
+    imageUrl: invitation.mainImageUrl,
+    linkUrl: shareUrl,
+  } as Record<string, string | number | undefined>;
 
   return (
     <Card className="mb-8">
@@ -58,16 +55,7 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">조회수 {invitation.totalViews || 0}</span>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleShare}
-              className="flex items-center gap-2"
-              title="주소 복사"
-            >
-              <Share2 className="w-4 h-4" />
-              {copied ? "복사됨!" : ""}
-            </Button>
+            <ShareMenu templateId={124176} templateArgs={templateArgs} linkUrl={shareUrl} />
           </div>
         </div>
       </CardHeader>
