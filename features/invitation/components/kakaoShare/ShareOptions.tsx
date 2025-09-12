@@ -25,7 +25,6 @@ export function ShareOptions({
 
   useEffect(() => {
     if (isReady() && kakaoButtonRef.current) {
-      console.log('ShareOptions: Creating Kakao button');
       createCustomButton('#kakao-share-button-modal', templateId, templateArgs);
     }
   }, [isReady, createCustomButton, templateId, templateArgs]);

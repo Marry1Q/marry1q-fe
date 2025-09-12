@@ -14,36 +14,27 @@ export function useKakaoShare() {
   const initAttemptedRef = useRef(false);
 
   useEffect(() => {
-    console.log('useKakaoShare: useEffect triggered');
-    
     const initializeKakao = () => {
-      console.log('useKakaoShare: initializeKakao called');
-      
       if (initAttemptedRef.current) {
-        console.log('useKakaoShare: Initialization already attempted');
         return;
       }
       
       if (!window.Kakao) {
-        console.log('useKakaoShare: Kakao not available yet, will retry');
         return;
       }
       
       initAttemptedRef.current = true;
       const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
       
-      console.log('useKakaoShare: Initializing with key:', key ? `${key.substring(0, 10)}...` : 'NO KEY');
-      
       if (key) {
         try {
           window.Kakao.init(key);
-          console.log('useKakaoShare: Kakao initialization successful');
-          console.log('useKakaoShare: Kakao.isInitialized():', window.Kakao.isInitialized());
+          console.log('✅ 카카오 SDK 초기화 완료');
         } catch (error) {
-          console.error('useKakaoShare: Kakao initialization failed:', error);
+          console.error('❌ 카카오 SDK 초기화 실패:', error);
         }
       } else {
-        console.error('useKakaoShare: NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY is not set');
+        console.error('❌ NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY가 설정되지 않음');
       }
     };
     
@@ -53,7 +44,6 @@ export function useKakaoShare() {
     // SDK가 아직 로드되지 않았다면 재시도
     if (!window.Kakao) {
       const interval = setInterval(() => {
-        console.log('useKakaoShare: Retrying Kakao initialization');
         if (window.Kakao && !initAttemptedRef.current) {
           initializeKakao();
           clearInterval(interval);
@@ -63,7 +53,7 @@ export function useKakaoShare() {
       // 10초 후 타임아웃
       setTimeout(() => {
         clearInterval(interval);
-        console.error('useKakaoShare: Kakao initialization timeout');
+        console.error('❌ 카카오 SDK 초기화 타임아웃');
       }, 10000);
       
       return () => clearInterval(interval);
@@ -74,108 +64,102 @@ export function useKakaoShare() {
 
   const isReady = () => {
     const Kakao = getKakao();
-    console.log('useKakaoShare: isReady check - Kakao:', Kakao);
-    console.log('useKakaoShare: isReady check - Kakao.isInitialized:', Kakao?.isInitialized);
-    const ready = !!(Kakao && Kakao.isInitialized && Kakao.isInitialized());
-    console.log('useKakaoShare: isReady result:', ready);
-    return ready;
+    return !!(Kakao && Kakao.isInitialized && Kakao.isInitialized());
   };
 
   const tryInit = () => {
-    console.log('useKakaoShare: tryInit called');
     const Kakao = getKakao();
     const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
     
-    console.log('useKakaoShare: tryInit - Kakao:', Kakao);
-    console.log('useKakaoShare: tryInit - key exists:', !!key);
-    console.log('useKakaoShare: tryInit - Kakao.init exists:', !!Kakao?.init);
-    console.log('useKakaoShare: tryInit - Kakao.isInitialized():', Kakao?.isInitialized?.());
-    
     if (Kakao && Kakao.init && !Kakao.isInitialized() && key) {
       try {
-        console.log('useKakaoShare: tryInit - Attempting to initialize Kakao');
         Kakao.init(key);
-        console.log('useKakaoShare: tryInit - Kakao initialization successful');
       } catch (error) {
-        console.error('useKakaoShare: tryInit - Kakao initialization failed:', error);
+        console.error('❌ 카카오 SDK 재초기화 실패:', error);
       }
-    } else {
-      console.log('useKakaoShare: tryInit - Conditions not met for initialization');
     }
   };
 
   const waitForReady = async (timeoutMs = 5000, intervalMs = 100): Promise<boolean> => {
-    console.log('useKakaoShare: waitForReady started');
     const start = Date.now();
-    let attempts = 0;
     
     while (Date.now() - start < timeoutMs) {
-      attempts++;
-      console.log(`useKakaoShare: waitForReady attempt ${attempts}`);
-      
       tryInit();
       if (isReady()) {
-        console.log('useKakaoShare: waitForReady - Kakao is ready!');
         return true;
       }
       
-      console.log('useKakaoShare: waitForReady - Not ready yet, waiting...');
       await new Promise((r) => setTimeout(r, intervalMs));
     }
     
-    console.error('useKakaoShare: waitForReady - Timeout reached, Kakao not ready');
+    console.error('❌ 카카오 SDK 준비 타임아웃');
     return false;
   };
 
   const createCustomButton = async (containerId: string, templateId: number, templateArgs?: TemplateArgs): Promise<boolean> => {
-    console.log('useKakaoShare: createCustomButton called with containerId:', containerId);
-    console.log('useKakaoShare: createCustomButton called with templateId:', templateId);
-    console.log('useKakaoShare: createCustomButton called with templateArgs:', templateArgs);
+    console.log('📤 카카오 공유 요청:', {
+      templateId,
+      templateArgs: {
+        title: templateArgs?.title,
+        date: templateArgs?.date,
+        venue: templateArgs?.venue,
+        THU: templateArgs?.THU ? '이미지 설정됨' : '이미지 없음',
+        REGI_WEB_DOMAIN: templateArgs?.REGI_WEB_DOMAIN,
+        groomName: templateArgs?.groomName,
+        brideName: templateArgs?.brideName
+      }
+    });
     
     const ready = await waitForReady();
-    console.log('useKakaoShare: createCustomButton - ready:', ready);
     
     if (!ready) {
-      console.error('useKakaoShare: createCustomButton - Kakao not ready, cannot create button');
+      console.error('❌ 카카오 SDK가 준비되지 않음');
       return false;
     }
     
     try {
       const Kakao = getKakao();
-      console.log('useKakaoShare: createCustomButton - Calling Kakao.Share.createCustomButton');
       Kakao!.Share.createCustomButton({
         container: containerId,
         templateId,
         templateArgs
       });
-      console.log('useKakaoShare: createCustomButton - Success!');
+      console.log('✅ 카카오 공유 버튼 생성 완료');
       return true;
     } catch (e) {
-      console.error('useKakaoShare: createCustomButton - Error:', e);
+      console.error('❌ 카카오 공유 버튼 생성 실패:', e);
       return false;
     }
   };
 
   const sendCustom = async (templateId: number, templateArgs?: TemplateArgs): Promise<boolean> => {
-    console.log('useKakaoShare: sendCustom called with templateId:', templateId);
-    console.log('useKakaoShare: sendCustom called with templateArgs:', templateArgs);
+    console.log('📤 카카오 공유 전송:', {
+      templateId,
+      templateArgs: {
+        title: templateArgs?.title,
+        date: templateArgs?.date,
+        venue: templateArgs?.venue,
+        THU: templateArgs?.THU ? '이미지 설정됨' : '이미지 없음',
+        REGI_WEB_DOMAIN: templateArgs?.REGI_WEB_DOMAIN,
+        groomName: templateArgs?.groomName,
+        brideName: templateArgs?.brideName
+      }
+    });
     
     const ready = await waitForReady();
-    console.log('useKakaoShare: sendCustom - ready:', ready);
     
     if (!ready) {
-      console.error('useKakaoShare: sendCustom - Kakao not ready, cannot send');
+      console.error('❌ 카카오 SDK가 준비되지 않음');
       return false;
     }
     
     try {
       const Kakao = getKakao();
-      console.log('useKakaoShare: sendCustom - Calling Kakao.Share.sendCustom');
       Kakao!.Share.sendCustom({ templateId, templateArgs });
-      console.log('useKakaoShare: sendCustom - Success!');
+      console.log('✅ 카카오 공유 전송 완료');
       return true;
     } catch (e) {
-      console.error('useKakaoShare: sendCustom - Error:', e);
+      console.error('❌ 카카오 공유 전송 실패:', e);
       return false;
     }
   };
