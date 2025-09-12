@@ -8,6 +8,8 @@ import { colors } from "@/constants/colors";
 import { useState } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { ShareMenu } from "./kakaoShare";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 
 interface PrimaryInvitation {
   id: number;
@@ -18,7 +20,9 @@ interface PrimaryInvitation {
   coupleSlug?: string;
   // 추가된 상세 정보
   weddingDate?: string;
+  weddingTime?: string;
   weddingLocation?: string;
+  venueAddress?: string;
   groomName?: string;
   brideName?: string;
   groomPhone?: string;
@@ -36,13 +40,61 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
   const { coupleSlug, coupleInfo } = useAuth();
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const shareUrl = `${origin}/invitation/${coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id}`;
+  // 🔧 카카오 템플릿 변수에 맞게 수정
   const templateArgs = {
-    title: invitation.title,
-    date: invitation.weddingDate,
-    venue: invitation.weddingLocation,
-    imageUrl: invitation.mainImageUrl,
-    linkUrl: shareUrl,
+    title: invitation.title || "결혼식에 초대합니다",
+    // 🔧 date 변수에 날짜와 시간을 함께 전달
+    date: `${formatWeddingDate(invitation.weddingDate || "")}\n${formatWeddingTime(invitation.weddingTime)}`,
+    // 🔧 venue 변수에 장소와 주소를 띄어쓰기로 연결해서 전달
+    venue: `${invitation.weddingLocation || "장소 미정"} ${invitation.venueAddress || ""}`.trim(),
+    // 🔧 이미지 변수명을 THU로 변경하고 절대 경로로 변환
+    THU: invitation.mainImageUrl ? 
+      (invitation.mainImageUrl.startsWith('http') ? 
+        invitation.mainImageUrl : 
+        `${origin}${invitation.mainImageUrl}`) : 
+      `${origin}/invitation/invitationMainImage1.jpeg`,
+    // 🔧 링크 변수 추가 - 카카오 템플릿에서 사용할 변수명
+    LINK: shareUrl,
+    groomName: invitation.groomName || "",
+    brideName: invitation.brideName || "",
   } as Record<string, string | number | undefined>;
+
+  // 날짜와 시간 포맷팅 함수
+  const formatWeddingDate = (dateString: string): string => {
+    if (!dateString) return "날짜 미정";
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "날짜 미정";
+      
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+      
+      return `${year}. ${month}. ${day}. ${dayOfWeek}`;
+    } catch {
+      return "날짜 미정";
+    }
+  };
+
+  const formatWeddingTime = (timeString?: string): string => {
+    if (!timeString) return "";
+    
+    try {
+      const [hours, minutes] = timeString.split(':');
+      const hour = parseInt(hours);
+      const minute = parseInt(minutes);
+      
+      const ampm = hour < 12 ? "AM" : "PM";
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const displayMinute = minute.toString().padStart(2, '0');
+      
+      return `${ampm} ${displayHour}:${displayMinute}`;
+    } catch {
+      return timeString;
+    }
+  };
 
   return (
     <Card className="mb-8">
@@ -88,20 +140,23 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
 
             {/* 청첩장 정보 */}
             <div className="space-y-3">
-              <h3 className="font-bold text-lg text-gray-800 text-center">
+              <h3 className="text-xl text-gray-800 text-center"
+              style={{fontFamily: "Hana2-CM"}}>
                 {invitation.title || "제목이 없습니다"}
               </h3>
               <p className="text-sm text-gray-600 text-center">
-                {invitation.weddingDate || "날짜 미정"}
+                {formatWeddingDate(invitation.weddingDate || "")}
                 <br />
-                {invitation.weddingLocation || "장소 미정"}
+                {formatWeddingTime(invitation.weddingTime)}
+                <br />
+                {invitation.weddingLocation || "장소 미정"} {invitation.venueAddress || ""}
               </p>
 
               {/* 버튼들 */}
               <div className="flex gap-2 pt-3">
                 <Link href={`/invitation/${coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id}`} className="flex-1">
                   <Button variant="outline" size="sm" className="w-full text-xs">
-                    초대장 보기
+                    청첩장 확인하기
                   </Button>
                 </Link>
               </div>
