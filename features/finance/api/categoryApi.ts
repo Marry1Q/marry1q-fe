@@ -9,13 +9,13 @@ import {
 // 카테고리 API 함수들
 export const categoryApi = {
   // 카테고리 목록 조회 (기본 + 커스텀)
-  async getCategories(): Promise<CustomApiResponse<CategoryListResponse>> {
+  async getCategories(silent?: boolean): Promise<CustomApiResponse<CategoryListResponse>> {
     console.group('📂 [FRONTEND] 카테고리 목록 조회 요청');
     console.log('🎯 API 엔드포인트:', '/api/finance/categories');
     console.log('⏰ 요청 시간:', new Date().toISOString());
     
     try {
-      const response = await apiClient.get<CategoryListResponse>('/api/finance/categories');
+      const response = await apiClient.get<CategoryListResponse>('/api/finance/categories', silent);
       
       console.log('✅ 응답 성공:', {
         success: response.success,

@@ -30,6 +30,7 @@ export const useAuth = () => {
       try {
         // 🔧 로그인 페이지에서는 API 호출을 하지 않음
         if (typeof window !== 'undefined' && window.location.pathname === '/login') {
+          console.log('🔒 로그인 페이지에서 인증 체크 스킵');
           setAuthState({
             isAuthenticated: false,
             isLoading: false,

@@ -31,7 +31,7 @@ export const useFinanceData = () => {
       setLoading(true);
       setError(null);
       
-      const response = await financeApi.getTransactions(params);
+      const response = await financeApi.getTransactions(params, true); // silent = true
       
       if (response.success && response.data) {
         setTransactions(response.data.transactions);
@@ -60,7 +60,7 @@ export const useFinanceData = () => {
       setLoading(true);
       setError(null);
       
-      const response = await financeApi.getBudgetOverview();
+      const response = await financeApi.getBudgetOverview(true); // silent = true
       
       if (response.success && response.data) {
         setBudgetOverview(response.data);
@@ -83,7 +83,7 @@ export const useFinanceData = () => {
       setLoading(true);
       setError(null);
       
-      const response = await categoryApi.getCategories();
+      const response = await categoryApi.getCategories(true); // silent = true
       
       if (response.success && response.data) {
         setCategories(response.data.categories);
@@ -134,7 +134,7 @@ export const useFinanceData = () => {
       setLoading(true);
       setError(null);
       
-      const response = await financeApi.getReviewPendingTransactions();
+      const response = await financeApi.getReviewPendingTransactions(true); // silent = true
       
       if (response.success && response.data) {
         // API 응답 구조: { summary: {...}, transactions: [...] }
@@ -213,7 +213,7 @@ export const useFinanceData = () => {
     fetchBudgetOverview();
     fetchCategories();
     fetchReviewPendingTransactions();
-  }, [fetchTransactions, fetchBudgetOverview, fetchCategories, fetchReviewPendingTransactions]);
+  }, []);
 
   return {
     // 상태

@@ -297,7 +297,7 @@ class ApiClient {
   }
 
   // multipart/form-data POST 요청
-  async postMultipart<T>(endpoint: string, data: { [key: string]: any }, files?: { [key: string]: File }): Promise<CustomApiResponse<T>> {
+  async postMultipart<T>(endpoint: string, data: { [key: string]: any }, files?: { [key: string]: File }, silent?: boolean): Promise<CustomApiResponse<T>> {
     const formData = new FormData();
     
     // JSON 데이터 추가
@@ -357,8 +357,11 @@ class ApiClient {
       } as CustomApiResponse<T>;
     } catch (error) {
       console.error('Multipart request failed:', error);
-      // toast.error('서버 연결에 실패했습니다.'); // 중복 토스트 제거
-      throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.');
+      if (silent) {
+        throw error; // 원본 에러를 그대로 전달 (토스트 없음)
+      } else {
+        throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.');
+      }
     }
   }
 
@@ -371,7 +374,7 @@ class ApiClient {
   }
 
   // multipart/form-data PUT 요청
-  async putMultipart<T>(endpoint: string, data: { [key: string]: any }, files?: { [key: string]: File }): Promise<CustomApiResponse<T>> {
+  async putMultipart<T>(endpoint: string, data: { [key: string]: any }, files?: { [key: string]: File }, silent?: boolean): Promise<CustomApiResponse<T>> {
     const formData = new FormData();
     
     // JSON 데이터 추가
@@ -431,8 +434,11 @@ class ApiClient {
       } as CustomApiResponse<T>;
     } catch (error) {
       console.error('Multipart PUT request failed:', error);
-      // toast.error('서버 연결에 실패했습니다.'); // 중복 토스트 제거
-      throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.');
+      if (silent) {
+        throw error; // 원본 에러를 그대로 전달 (토스트 없음)
+      } else {
+        throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.');
+      }
     }
   }
 
