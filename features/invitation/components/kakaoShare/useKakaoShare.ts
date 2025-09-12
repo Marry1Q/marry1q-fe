@@ -104,7 +104,7 @@ export function useKakaoShare() {
         date: templateArgs?.date,
         venue: templateArgs?.venue,
         THU: templateArgs?.THU ? '이미지 설정됨' : '이미지 없음',
-        REGI_WEB_DOMAIN: templateArgs?.REGI_WEB_DOMAIN,
+        REGI_WEB_DOMAIN: templateArgs?.coupleSlug,
         groomName: templateArgs?.groomName,
         brideName: templateArgs?.brideName
       }
@@ -140,7 +140,7 @@ export function useKakaoShare() {
         date: templateArgs?.date,
         venue: templateArgs?.venue,
         THU: templateArgs?.THU ? '이미지 설정됨' : '이미지 없음',
-        REGI_WEB_DOMAIN: templateArgs?.REGI_WEB_DOMAIN,
+        REGI_WEB_DOMAIN: templateArgs?.coupleSlug,
         groomName: templateArgs?.groomName,
         brideName: templateArgs?.brideName
       }
