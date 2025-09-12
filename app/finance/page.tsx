@@ -223,7 +223,7 @@ export default function CoupleFinancePage() {
   // 커플 멤버 목록 불러오기
   const loadCoupleMembers = useCallback(async () => {
     try {
-      const response = await coupleApi.getCurrentCoupleInfo();
+      const response = await coupleApi.getCurrentCoupleInfo(true) // silent = true;
       if (response.success && response.data) {
         setCoupleMembers(response.data.memberNames || []);
       }

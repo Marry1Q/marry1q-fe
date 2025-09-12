@@ -24,8 +24,8 @@ export interface UpdateCoupleRequest {
 // 커플 API 함수들
 export const coupleApi = {
   // 현재 로그인한 사용자의 커플 정보 조회
-  async getCurrentCoupleInfo() {
-    return apiClient.get<CoupleResponse>('/api/couple/info');
+  async getCurrentCoupleInfo(silent: boolean = false) {
+    return apiClient.get<CoupleResponse>('/api/couple/info', silent);
   },
   
   // 현재 로그인한 사용자의 커플 정보 수정

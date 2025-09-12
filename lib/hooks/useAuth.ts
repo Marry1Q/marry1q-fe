@@ -38,7 +38,7 @@ export const useAuth = () => {
             let coupleInfo = null;
             if (response.data.coupleId) {
               try {
-                const coupleResponse = await coupleApi.getCurrentCoupleInfo();
+                const coupleResponse = await coupleApi.getCurrentCoupleInfo(true); // silent = true
                 if (coupleResponse.success && coupleResponse.data) {
                   coupleInfo = coupleResponse.data;
                 }
@@ -109,7 +109,7 @@ export const useAuth = () => {
           let coupleInfo = null;
           if (userResponse.data.coupleId) {
             try {
-              const coupleResponse = await coupleApi.getCurrentCoupleInfo();
+              const coupleResponse = await coupleApi.getCurrentCoupleInfo(true); // silent = true
               if (coupleResponse.success && coupleResponse.data) {
                 coupleInfo = coupleResponse.data;
               }
@@ -177,7 +177,7 @@ export const useAuth = () => {
         let coupleInfo = null;
         if (response.data.coupleId) {
           try {
-            const coupleResponse = await coupleApi.getCurrentCoupleInfo();
+            const coupleResponse = await coupleApi.getCurrentCoupleInfo(true); // silent = true
             if (coupleResponse.success && coupleResponse.data) {
               coupleInfo = coupleResponse.data;
             }

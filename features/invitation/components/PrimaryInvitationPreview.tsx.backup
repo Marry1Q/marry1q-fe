@@ -40,8 +40,26 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
   const { coupleSlug, coupleInfo } = useAuth();
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const shareUrl = `${origin}/invitation/${coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id}`;
+  // 🔧 카카오 템플릿 변수에 맞게 수정
+  const templateArgs = {
+    title: invitation.title || "결혼식에 초대합니다",
+    // 🔧 date 변수에 날짜와 시간을 함께 전달
+    date: `${formatWeddingDate(invitation.weddingDate || "")}\n${formatWeddingTime(invitation.weddingTime)}`,
+    // 🔧 venue 변수에 장소와 주소를 띄어쓰기로 연결해서 전달
+    venue: `${invitation.weddingLocation || "장소 미정"} ${invitation.venueAddress || ""}`.trim(),
+    // 🔧 이미지 변수명을 THU로 변경하고 절대 경로로 변환
+    THU: invitation.mainImageUrl ? 
+      (invitation.mainImageUrl.startsWith('http') ? 
+        invitation.mainImageUrl : 
+        `${origin}${invitation.mainImageUrl}`) : 
+      `${origin}/invitation/invitationMainImage1.jpeg`,
+    // 🔧 링크 변수 추가 - 카카오 템플릿에서 사용할 변수명
+    LINK: shareUrl,
+    groomName: invitation.groomName || "",
+    brideName: invitation.brideName || "",
+  } as Record<string, string | number | undefined>;
 
-  // 🔧 날짜와 시간 포맷팅 함수들을 먼저 선언
+  // 날짜와 시간 포맷팅 함수
   const formatWeddingDate = (dateString: string): string => {
     if (!dateString) return "날짜 미정";
     
@@ -77,25 +95,6 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
       return timeString;
     }
   };
-
-  // 🔧 카카오 템플릿 변수에 맞게 수정 (함수 선언 후)
-  const templateArgs = {
-    title: invitation.title || "결혼식에 초대합니다",
-    // 🔧 date 변수에 날짜와 시간을 함께 전달
-    date: `${formatWeddingDate(invitation.weddingDate || "")}\n${formatWeddingTime(invitation.weddingTime)}`,
-    // 🔧 venue 변수에 장소와 주소를 띄어쓰기로 연결해서 전달
-    venue: `${invitation.weddingLocation || "장소 미정"} ${invitation.venueAddress || ""}`.trim(),
-    // 🔧 이미지 변수명을 THU로 변경하고 절대 경로로 변환
-    THU: invitation.mainImageUrl ? 
-      (invitation.mainImageUrl.startsWith('http') ? 
-        invitation.mainImageUrl : 
-        `${origin}${invitation.mainImageUrl}`) : 
-      `${origin}/invitation/invitationMainImage1.jpeg`,
-    // 🔧 링크 변수 추가 - 카카오 템플릿에서 사용할 변수명
-    LINK: shareUrl,
-    groomName: invitation.groomName || "",
-    brideName: invitation.brideName || "",
-  } as Record<string, string | number | undefined>;
 
   return (
     <Card className="mb-8">
@@ -155,7 +154,7 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
 
               {/* 버튼들 */}
               <div className="flex gap-2 pt-3">
-                <Link href={shareUrl} className="flex-1">
+                <Link href={`/invitation/${coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id}`} className="flex-1">
                   <Button variant="outline" size="sm" className="w-full text-xs">
                     청첩장 확인하기
                   </Button>
@@ -179,4 +178,4 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
       </CardContent>
     </Card>
   );
-}
+} 
