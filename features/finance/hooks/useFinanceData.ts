@@ -4,7 +4,7 @@ import { useFinanceStore } from '../store';
 import { TransactionSearchParams, BudgetOverviewResponse } from '../types';
 import { showErrorToast } from '@/components/ui/toast';
 
-export const useFinanceData = () => {
+export const useFinanceData = (isAuthenticated: boolean = true) => {
   const {
     transactions,
     budgetOverview,
@@ -204,16 +204,18 @@ export const useFinanceData = () => {
     }
   }, [fetchReviewPendingTransactions, setLoading]);
 
-  // 초기 데이터 로드
+  // 초기 데이터 로드 - 인증된 사용자만
   useEffect(() => {
-    fetchTransactions({
-      page: 0,
-      size: 10,
-    });
-    fetchBudgetOverview();
-    fetchCategories();
-    fetchReviewPendingTransactions();
-  }, []);
+    if (isAuthenticated) {
+      fetchTransactions({
+        page: 0,
+        size: 10,
+      });
+      fetchBudgetOverview();
+      fetchCategories();
+      fetchReviewPendingTransactions();
+    }
+  }, [isAuthenticated]);
 
   return {
     // 상태
