@@ -105,8 +105,9 @@ async function refreshAccessToken(): Promise<boolean> {
 class ApiClient {
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit & { silent?: boolean } = {}
   ): Promise<CustomApiResponse<T>> {
+    const { silent, ...fetchOptions } = options;
     const url = `${API_BASE_URL}${endpoint}`;
     
     // 기본 헤더 설정
@@ -134,9 +135,9 @@ class ApiClient {
       bodyForLog = options.body;
     }
     
-    console.log('🌐 API Request:', {
+      console.log('🌐 API Request:', {
       url,
-      method: options.method || 'GET',
+      method: fetchOptions.method || 'GET',
       headers,
       body: bodyForLog
     });
@@ -144,7 +145,7 @@ class ApiClient {
     try {
       console.log("🚀 fetch 호출 시작...");
       let response = await fetch(url, {
-        ...options,
+        ...fetchOptions,
         headers,
       });
 
@@ -165,7 +166,7 @@ class ApiClient {
           headers.Authorization = `Bearer ${newAccessToken}`;
           console.log("🔄 토큰 갱신 성공, 재요청 시도...");
           response = await fetch(url, {
-            ...options,
+            ...fetchOptions,
             headers,
           });
         } else {
@@ -230,7 +231,10 @@ class ApiClient {
       if (data.success !== undefined) {
         if (!data.success && data.error) {
           const errorMessage = data.error.message || data.message || '알 수 없는 오류가 발생했습니다.';
-          showErrorToast(errorMessage);
+          // 🔧 silent 옵션이 true이면 토스트를 표시하지 않음
+          if (!silent) {
+            showErrorToast(errorMessage);
+          }
           throw new Error(errorMessage);
         }
         return data as CustomApiResponse<T>;
@@ -240,7 +244,10 @@ class ApiClient {
       if (data.status) {
         if (data.status !== 'SUCCESS') {
           const errorMessage = data.message || '알 수 없는 오류가 발생했습니다.';
-          showErrorToast(errorMessage);
+          // 🔧 silent 옵션이 true이면 토스트를 표시하지 않음
+          if (!silent) {
+            showErrorToast(errorMessage);
+          }
           throw new Error(errorMessage);
         }
         // 기존 구조를 CustomApiResponse로 변환
@@ -265,21 +272,27 @@ class ApiClient {
       }
       
       console.error('API request failed:', error);
-      // toast.error('서버 연결에 실패했습니다.'); // 중복 토스트 제거
-      throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.');
+      
+      // 🔧 silent 옵션이 true이면 토스트를 표시하지 않음
+      if (!silent) {
+        throw new Error('네트워크 연결에 실패했습니다. 인터넷 연결을 확인해주세요.');
+      } else {
+        throw error; // 원본 에러를 그대로 전달
+      }
     }
   }
 
   // GET 요청
-  async get<T>(endpoint: string): Promise<CustomApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  async get<T>(endpoint: string, silent?: boolean): Promise<CustomApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'GET', silent });
   }
 
   // POST 요청
-  async post<T>(endpoint: string, data?: any): Promise<CustomApiResponse<T>> {
+  async post<T>(endpoint: string, data?: any, silent?: boolean): Promise<CustomApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
+      silent,
     });
   }
 
