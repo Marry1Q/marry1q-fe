@@ -215,6 +215,11 @@ class ApiClient {
           console.error("❌ 응답 텍스트 읽기 실패:", parseError);
         }
         
+        // 🔧 silent 옵션이 true이면 토스트를 표시하지 않음
+        if (!silent) {
+          showErrorToast(errorMessage);
+        }
+        
         throw new Error(errorMessage);
       }
 
