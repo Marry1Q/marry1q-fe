@@ -92,7 +92,7 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
         `${origin}${invitation.mainImageUrl}`) : 
       `${origin}/invitation/invitationMainImage1.jpeg`,
     // 🔧 링크 변수 추가 - 카카오 템플릿에서 사용할 변수명
-    REGI_WEB_DOMAIN: shareUrl,
+    coupleSlug: coupleInfo?.urlSlug || coupleSlug || invitation.coupleSlug || invitation.id,
     groomName: invitation.groomName || "",
     brideName: invitation.brideName || "",
   } as Record<string, string | number | undefined>;
