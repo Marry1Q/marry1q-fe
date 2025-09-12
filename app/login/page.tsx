@@ -8,19 +8,21 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock, Mail, Loader2, Sparkles } from "lucide-react";
 import { colors } from "@/constants/colors";
 import Image from "next/image";
-import { showErrorToast } from "@/components/ui/toast";
+import { showErrorToast, showSuccessToast } from "@/components/ui/toast";
 import Iridescence from "@/components/ui/Iridescence/Iridescence";
-import { useAuth } from "@/lib/hooks/useAuth";
+import { authApi } from "@/lib/api/authApi";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     customerEmail: "",
     customerPw: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { login, isLoading } = useAuth();
+  const router = useRouter();
 
   // 페이지 로드 시 애니메이션
   useEffect(() => {
@@ -70,17 +72,29 @@ export default function LoginPage() {
     }
 
     try {
-      const result = await login(formData);
+      setIsLoading(true);
+      const result = await authApi.login(formData);
       
-      if (result && !result.success) {
-        // 에러는 이미 toast로 표시됨
-        return;
+      if (result.success) {
+        showSuccessToast("로그인에 성공했습니다!");
+        
+        // URL 파라미터에서 returnUrl 확인
+        const urlParams = new URLSearchParams(window.location.search);
+        const returnUrl = urlParams.get('returnUrl');
+        
+        // returnUrl이 있으면 해당 페이지로, 없으면 홈으로
+        const redirectPath = returnUrl || '/';
+        router.push(redirectPath);
+      } else {
+        showErrorToast(result.message || "로그인에 실패했습니다.");
       }
     } catch (error) {
       console.error('Login error:', error);
       showErrorToast("로그인에 실패했습니다.");
+    } finally {
+      setIsLoading(false);
     }
-  }, [login, formData]);
+  }, [formData, router]);
 
   // Iridescence 배경 컴포넌트 메모이제이션
   const backgroundComponent = useMemo(() => (

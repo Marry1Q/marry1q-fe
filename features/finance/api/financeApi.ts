@@ -31,13 +31,13 @@ export interface CreateCategoryRequest {
 // 거래 내역 API 함수들
 export const financeApi = {
   // 카테고리 목록 조회
-  async getCategories(): Promise<CustomApiResponse<CategoryListResponse>> {
+  async getCategories(silent?: boolean): Promise<CustomApiResponse<CategoryListResponse>> {
     console.group('📂 [FRONTEND] 카테고리 목록 조회 요청');
     console.log('🎯 API 엔드포인트:', '/api/finance/categories');
     console.log('⏰ 요청 시간:', new Date().toISOString());
     
     try {
-      const response = await apiClient.get<CategoryListResponse>('/api/finance/categories');
+      const response = await apiClient.get<CategoryListResponse>('/api/finance/categories', silent);
       
       console.log('✅ 응답 성공:', {
         success: response.success,
@@ -82,7 +82,7 @@ export const financeApi = {
   },
 
   // 거래 내역 목록 조회 (검색, 필터링, 페이징 포함)
-  async getTransactions(params?: TransactionSearchParams): Promise<CustomApiResponse<TransactionListResponse>> {
+  async getTransactions(params?: TransactionSearchParams, silent?: boolean): Promise<CustomApiResponse<TransactionListResponse>> {
     const searchParams = new URLSearchParams();
     
     if (params?.searchTerm) searchParams.append('searchTerm', params.searchTerm);
@@ -97,7 +97,7 @@ export const financeApi = {
     const queryString = searchParams.toString();
     const endpoint = queryString ? `/api/finance/transactions?${queryString}` : '/api/finance/transactions';
     
-    return apiClient.get<TransactionListResponse>(endpoint);
+    return apiClient.get<TransactionListResponse>(endpoint, silent);
   },
 
   // 거래 내역 단건 조회
@@ -184,13 +184,13 @@ export const financeApi = {
   },
 
   // 예산 대시보드 정보 조회
-  async getBudgetOverview(): Promise<CustomApiResponse<BudgetOverviewResponse>> {
+  async getBudgetOverview(silent?: boolean): Promise<CustomApiResponse<BudgetOverviewResponse>> {
     console.group('📊 [FRONTEND] 예산 대시보드 조회 요청');
     console.log('🎯 API 엔드포인트:', '/api/finance/overview');
     console.log('⏰ 요청 시간:', new Date().toISOString());
     
     try {
-      const response = await apiClient.get<BudgetOverviewResponse>('/api/finance/overview');
+      const response = await apiClient.get<BudgetOverviewResponse>('/api/finance/overview', silent);
       
       console.log('✅ 응답 성공:', {
         success: response.success,
@@ -210,13 +210,13 @@ export const financeApi = {
   },
 
   // 리뷰 대기 거래내역 조회
-  async getReviewPendingTransactions(): Promise<CustomApiResponse<any>> {
+  async getReviewPendingTransactions(silent?: boolean): Promise<CustomApiResponse<any>> {
     console.group('🔍 [FRONTEND] 리뷰 대기 거래내역 조회 요청');
     console.log('🎯 API 엔드포인트:', '/api/account/transactions/review');
     console.log('⏰ 요청 시간:', new Date().toISOString());
     
     try {
-      const response = await apiClient.get<any>('/api/account/transactions/review');
+      const response = await apiClient.get<any>('/api/account/transactions/review', silent);
       
       console.log('✅ 응답 성공:', {
         success: response.success,
