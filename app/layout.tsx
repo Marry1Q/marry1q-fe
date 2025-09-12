@@ -2,7 +2,6 @@ import type React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { ShareInitializer } from "@/features/invitation/components/kakaoShare";
 
 export const metadata: Metadata = {
   title: "Marry1Q",
@@ -46,6 +45,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Gowun+Dodum:wght@400&display=swap"
           rel="stylesheet"
         />
+        <script
+          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+          async
+        />
       </head>
       <body
         style={{
@@ -54,7 +57,6 @@ export default function RootLayout({
         }}
       >
         <Toaster richColors position="top-center" />
-        <ShareInitializer />
         {children}
       </body>
     </html>

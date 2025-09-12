@@ -9,24 +9,62 @@ declare global {
 }
 
 export function ShareInitializer() {
+  console.log('ShareInitializer: Component rendered');
+  
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const existing = document.getElementById('kakao-sdk');
-    if (existing) return;
-
-    const script = document.createElement('script');
-    script.id = 'kakao-sdk';
-    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
-    script.integrity = 'sha384-2Q+3BK1MzklJic7TFQdoylWYPwnr5sL6u7XxX+OG65IR7Xba9ubiW8ai4gVkBxFX';
-    script.crossOrigin = 'anonymous';
-    script.onload = () => {
-      const Kakao = window.Kakao;
-      if (Kakao && !Kakao.isInitialized()) {
-        Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY);
+    console.log('ShareInitializer: useEffect triggered');
+    
+    const initializeKakao = () => {
+      console.log('ShareInitializer: Checking Kakao status');
+      console.log('ShareInitializer: window.Kakao:', window.Kakao);
+      
+      if (window.Kakao) {
+        console.log('ShareInitializer: Kakao object found');
+        console.log('ShareInitializer: Kakao.isInitialized():', window.Kakao.isInitialized());
+        
+        if (!window.Kakao.isInitialized()) {
+          const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
+          console.log('ShareInitializer: Initializing with key:', key ? `${key.substring(0, 10)}...` : 'NO KEY');
+          
+          if (key) {
+            try {
+              window.Kakao.init(key);
+              console.log('ShareInitializer: Kakao initialization successful');
+              console.log('ShareInitializer: Kakao.isInitialized() after init:', window.Kakao.isInitialized());
+            } catch (error) {
+              console.error('ShareInitializer: Kakao initialization failed:', error);
+            }
+          } else {
+            console.error('ShareInitializer: NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY is not set');
+          }
+        } else {
+          console.log('ShareInitializer: Kakao already initialized');
+        }
+      } else {
+        console.log('ShareInitializer: Kakao not loaded yet, will retry');
+        return false;
       }
+      return true;
     };
-    document.head.appendChild(script);
+    
+    // 즉시 시도
+    if (!initializeKakao()) {
+      // SDK가 아직 로드되지 않았다면 재시도
+      const interval = setInterval(() => {
+        console.log('ShareInitializer: Retrying Kakao initialization');
+        if (initializeKakao()) {
+          clearInterval(interval);
+        }
+      }, 100);
+      
+      // 10초 후 타임아웃
+      setTimeout(() => {
+        clearInterval(interval);
+        console.error('ShareInitializer: Kakao initialization timeout');
+      }, 10000);
+      
+      return () => clearInterval(interval);
+    }
   }, []);
 
   return null;
