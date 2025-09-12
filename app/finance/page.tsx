@@ -75,13 +75,16 @@ import { FinanceDashboard } from "@/features/finance";
 import { FinanceCategoryIcon } from "@/components/ui/FinanceCategoryIcon";
 import { coupleApi } from "@/lib/api/coupleApi";
 import { showConfirmDialog } from "@/components/ui/CustomAlert";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 // 카테고리 아이콘 매핑 제거 (새로운 시스템 사용)
 // const categoryIconMap: Record<string, any> = { ... };
 // const categoryColorMap: Record<string, string> = { ... };
 
 export default function CoupleFinancePage() {
-  // API 데이터 훅 사용
+  const { isAuthenticated } = useAuth();
+  
+  // API 데이터 훅 사용 - 인증 상태 전달
   const {
     transactions,
     budgetOverview,
@@ -98,7 +101,7 @@ export default function CoupleFinancePage() {
     updateTransactionReviewStatus,
     deleteTransaction,
     setIsReviewMode,
-  } = useFinanceData();
+  } = useFinanceData(isAuthenticated);
 
   const { setFilters } = useFinanceStore();
 
