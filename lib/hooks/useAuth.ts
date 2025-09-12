@@ -56,8 +56,12 @@ export const useAuth = () => {
                   const coupleResponse = await coupleApi.getCurrentCoupleInfo(true); // silent = true
                   if (coupleResponse.success && coupleResponse.data) {
                     coupleInfo = coupleResponse.data;
+                  } else {
+                    // 커플 정보 조회 실패해도 사용자 인증은 유지
+                    console.warn('커플 정보 조회 실패:', coupleResponse.message);
                   }
                 } catch (error) {
+                  // 커플 정보 조회 실패해도 사용자 인증은 유지
                   console.warn('커플 정보 조회 실패:', error);
                 }
               }
