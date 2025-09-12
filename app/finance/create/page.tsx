@@ -200,7 +200,7 @@ export default function AddTransactionPage() {
   const loadCoupleMembers = async () => {
     try {
       setIsLoadingMembers(true);
-      const response = await coupleApi.getCurrentCoupleInfo();
+      const response = await coupleApi.getCurrentCoupleInfo(true) // silent = true;
       
       if (response.success && response.data) {
         setCoupleMembers(response.data.memberNames || []);

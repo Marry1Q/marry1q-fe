@@ -192,7 +192,7 @@ export default function BudgetSettingsPage() {
   // 커플 정보 조회
   const fetchCoupleInfo = useCallback(async () => {
     try {
-      const response = await coupleApi.getCurrentCoupleInfo();
+      const response = await coupleApi.getCurrentCoupleInfo(true); // silent = true
       
       if (response.success && response.data) {
         setCoupleInfo(response.data);
