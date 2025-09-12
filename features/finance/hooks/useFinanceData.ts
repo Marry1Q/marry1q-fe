@@ -43,12 +43,12 @@ export const useFinanceData = (isAuthenticated: boolean = true) => {
         });
       } else {
         setError(response.message || '거래 내역을 불러오는데 실패했습니다.');
-        showErrorToast(response.message || '거래 내역을 불러오는데 실패했습니다.');
+        // silent 옵션을 사용했으므로 토스트 표시하지 않음
       }
     } catch (error: any) {
       const errorMessage = error.message || '거래 내역을 불러오는데 실패했습니다.';
       setError(errorMessage);
-      showErrorToast(errorMessage);
+      // silent 옵션을 사용했으므로 토스트 표시하지 않음
     } finally {
       setLoading(false);
     }
@@ -66,12 +66,12 @@ export const useFinanceData = (isAuthenticated: boolean = true) => {
         setBudgetOverview(response.data);
       } else {
         setError(response.message || '예산 정보를 불러오는데 실패했습니다.');
-        showErrorToast(response.message || '예산 정보를 불러오는데 실패했습니다.');
+        // silent 옵션을 사용했으므로 토스트 표시하지 않음
       }
     } catch (error: any) {
       const errorMessage = error.message || '예산 정보를 불러오는데 실패했습니다.';
       setError(errorMessage);
-      showErrorToast(errorMessage);
+      // silent 옵션을 사용했으므로 토스트 표시하지 않음
     } finally {
       setLoading(false);
     }
@@ -89,12 +89,12 @@ export const useFinanceData = (isAuthenticated: boolean = true) => {
         setCategories(response.data.categories);
       } else {
         setError(response.message || '카테고리를 불러오는데 실패했습니다.');
-        showErrorToast(response.message || '카테고리를 불러오는데 실패했습니다.');
+        // silent 옵션을 사용했으므로 토스트 표시하지 않음
       }
     } catch (error: any) {
       const errorMessage = error.message || '카테고리를 불러오는데 실패했습니다.';
       setError(errorMessage);
-      showErrorToast(errorMessage);
+      // silent 옵션을 사용했으므로 토스트 표시하지 않음
     } finally {
       setLoading(false);
     }

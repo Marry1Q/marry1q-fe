@@ -26,11 +26,12 @@ export function FinanceWeddingDateCard({
         if (response.success && response.data) {
           setCoupleInfo(response.data);
         } else {
-          toast.error(response.message || '커플 정보를 불러오는데 실패했습니다.');
+          // silent 모드이므로 토스트 표시하지 않음
+          console.warn('커플 정보 조회 실패:', response.message);
         }
       } catch (error: any) {
-        const errorMessage = error.message || '커플 정보를 불러오는데 실패했습니다.';
-        toast.error(errorMessage);
+        // silent 모드이므로 토스트 표시하지 않음
+        console.warn('커플 정보 조회 실패:', error.message);
       } finally {
         setLoading(false);
       }

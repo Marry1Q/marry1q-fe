@@ -203,10 +203,12 @@ export default function BudgetSettingsPage() {
         setTargetDate(weddingDate);
         setDaysUntilWedding(response.data.daysUntilWedding);
       } else {
-        showErrorToast(response.message || '커플 정보를 불러오는데 실패했습니다.');
+        // silent 모드이므로 토스트 표시하지 않음
+        console.warn('커플 정보 조회 실패:', response.message);
       }
     } catch (error: any) {
-      showErrorToast(error.message || '커플 정보를 불러오는데 실패했습니다.');
+      // silent 모드이므로 토스트 표시하지 않음
+      console.warn('커플 정보 조회 실패:', error.message);
     }
   }, []);
 
