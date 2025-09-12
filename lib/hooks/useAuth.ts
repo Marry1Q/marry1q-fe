@@ -31,8 +31,8 @@ export const useAuth = () => {
         const isAuth = authApi.isAuthenticated();
         
         if (isAuth) {
-          // 토큰이 있으면 사용자 정보 조회
-          const response = await authApi.getMyInfo();
+          // 🔧 토큰이 있으면 사용자 정보 조회 (silent 모드)
+          const response = await authApi.getMyInfo(true); // silent = true
           if (response.success && response.data) {
             // 커플 정보도 함께 조회
             let coupleInfo = null;

@@ -69,9 +69,9 @@ export const authApi = {
     }
   },
 
-  // 내 정보 조회
-  async getMyInfo() {
-    return apiClient.get<CustomerInfoResponse>('/api/auth/me');
+  // 내 정보 조회 (인증 상태 확인용)
+  async getMyInfo(silent: boolean = false) {
+    return apiClient.get<CustomerInfoResponse>('/api/auth/me', silent);
   },
 
   // 토큰 갱신
