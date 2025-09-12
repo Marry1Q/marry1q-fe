@@ -45,32 +45,47 @@ export const useAuth = () => {
         const isAuth = authApi.isAuthenticated();
         
         if (isAuth) {
-          // 토큰이 있으면 사용자 정보 조회
-          const response = await authApi.getMyInfo(true); // silent = true
-          if (response.success && response.data) {
-            // 커플 정보도 함께 조회
-            let coupleInfo = null;
-            if (response.data.coupleId) {
-              try {
-                const coupleResponse = await coupleApi.getCurrentCoupleInfo(true); // silent = true
-                if (coupleResponse.success && coupleResponse.data) {
-                  coupleInfo = coupleResponse.data;
+          try {
+            // 토큰이 있으면 사용자 정보 조회
+            const response = await authApi.getMyInfo(true); // silent = true
+            if (response.success && response.data) {
+              // 커플 정보도 함께 조회
+              let coupleInfo = null;
+              if (response.data.coupleId) {
+                try {
+                  const coupleResponse = await coupleApi.getCurrentCoupleInfo(true); // silent = true
+                  if (coupleResponse.success && coupleResponse.data) {
+                    coupleInfo = coupleResponse.data;
+                  }
+                } catch (error) {
+                  console.warn('커플 정보 조회 실패:', error);
                 }
-              } catch (error) {
-                console.warn('커플 정보 조회 실패:', error);
               }
+              
+              setAuthState({
+                isAuthenticated: true,
+                isLoading: false,
+                user: response.data,
+                coupleId: response.data.coupleId,
+                coupleSlug: response.data.coupleSlug || null,
+                coupleInfo: coupleInfo,
+              });
+            } else {
+              // 토큰이 있지만 사용자 정보 조회 실패 (토큰 만료 등)
+              console.log('🔒 토큰이 유효하지 않음, 로그아웃 처리');
+              authApi.clearTokens();
+              setAuthState({
+                isAuthenticated: false,
+                isLoading: false,
+                user: null,
+                coupleId: null,
+                coupleSlug: null,
+                coupleInfo: null,
+              });
             }
-            
-            setAuthState({
-              isAuthenticated: true,
-              isLoading: false,
-              user: response.data,
-              coupleId: response.data.coupleId,
-              coupleSlug: response.data.coupleSlug || null,
-              coupleInfo: coupleInfo,
-            });
-          } else {
-            // 토큰이 있지만 사용자 정보 조회 실패
+          } catch (error) {
+            // API 호출 실패 시 (403 등)
+            console.log('🔒 API 호출 실패, 로그아웃 처리:', error);
             authApi.clearTokens();
             setAuthState({
               isAuthenticated: false,
@@ -82,6 +97,7 @@ export const useAuth = () => {
             });
           }
         } else {
+          // 토큰이 없음
           setAuthState({
             isAuthenticated: false,
             isLoading: false,
