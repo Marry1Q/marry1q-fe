@@ -1,6 +1,26 @@
 import { showErrorToast } from '@/components/ui/toast';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const getApiBaseUrl = () => {
+  // 환경변수가 있으면 사용
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  // 브라우저 환경에서 호스트명 확인
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8080';
+    }
+    // 프로덕션 도메인인 경우
+    return 'https://api.marry1q.com';
+  }
+  
+  // 서버 사이드에서는 기본값
+  return 'http://localhost:8080';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // API 응답 타입 (백엔드 CustomApiResponse와 일치)
 interface CustomApiResponse<T = any> {
