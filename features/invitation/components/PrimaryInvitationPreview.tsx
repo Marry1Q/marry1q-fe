@@ -82,7 +82,7 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
   const templateArgs = {
     title: invitation.title || "결혼식에 초대합니다",
     // 🔧 date 변수에 날짜와 시간을 함께 전달
-    date: `${formatWeddingDate(invitation.weddingDate || "")}\n${formatWeddingTime(invitation.weddingTime)}`,
+    date: `${formatWeddingDate(invitation.weddingDate || "")} ${formatWeddingTime(invitation.weddingTime)}`,
     // 🔧 venue 변수에 장소와 주소를 띄어쓰기로 연결해서 전달
     venue: `${invitation.weddingLocation || "장소 미정"} ${invitation.venueAddress || ""}`.trim(),
     // 🔧 이미지 변수명을 THU로 변경하고 절대 경로로 변환

@@ -28,10 +28,23 @@ export const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // 🔧 로그인 페이지에서는 API 호출을 하지 않음
+        if (typeof window !== 'undefined' && window.location.pathname === '/login') {
+          setAuthState({
+            isAuthenticated: false,
+            isLoading: false,
+            user: null,
+            coupleId: null,
+            coupleSlug: null,
+            coupleInfo: null,
+          });
+          return;
+        }
+
         const isAuth = authApi.isAuthenticated();
         
         if (isAuth) {
-          // 🔧 토큰이 있으면 사용자 정보 조회 (silent 모드)
+          // 토큰이 있으면 사용자 정보 조회
           const response = await authApi.getMyInfo(true); // silent = true
           if (response.success && response.data) {
             // 커플 정보도 함께 조회
