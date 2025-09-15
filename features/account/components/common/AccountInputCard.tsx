@@ -28,9 +28,8 @@ export function AccountInputCard({
   const formatAccountNumber = (value: string) => {
     const number = value.replace(/[^\d]/g, "");
     if (number.length <= 3) return number;
-    if (number.length <= 6) return `${number.slice(0, 3)}-${number.slice(3)}`;
-    if (number.length <= 12) return `${number.slice(0, 3)}-${number.slice(3, 6)}-${number.slice(6)}`;
-    return `${number.slice(0, 3)}-${number.slice(3, 9)}-${number.slice(9, 15)}`;
+    // 앞 3자리 뒤에만 하이픈을 추가하고, 이후에는 하이픈 없이 그대로 표시
+    return `${number.slice(0, 3)}-${number.slice(3)}`;
   };
 
   const handleAccountNumberChange = (
@@ -68,7 +67,7 @@ export function AccountInputCard({
               value={accountNumber}
               onChange={handleAccountNumberChange}
               placeholder="계좌번호를 입력해주세요"
-              maxLength={17}
+              maxLength={16}
               className="mt-2"
             />
           </div>
