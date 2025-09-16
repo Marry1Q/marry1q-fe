@@ -83,6 +83,7 @@ export function BasicInfoForm({
             <div className="mt-2">
               <Calendar24
                 date={invitationData.weddingDate}
+                time={invitationData.weddingTime}
                 onDateChange={(date) => {
                   updateInvitationData("weddingDate", date)
                 }}
@@ -131,4 +132,4 @@ export function BasicInfoForm({
       </Card>
     </div>
   )
-} 
+}

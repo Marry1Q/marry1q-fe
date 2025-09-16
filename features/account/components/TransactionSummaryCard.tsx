@@ -1,6 +1,13 @@
 import { TransactionType } from "../types";
-import { getBankLogo, getBankCode } from "../utils/bankUtils";
+import { getBankLogoByName } from "../utils/bankUtils";
 import Image from "next/image";
+
+// TransactionSummaryCard에서 사용할 모임통장 정보 타입
+interface MeetingAccountInfo {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+}
 
 interface TransactionSummaryCardProps {
   type: TransactionType;
@@ -12,6 +19,7 @@ interface TransactionSummaryCardProps {
   amount: number;
   depositDescription?: string;
   withdrawDescription?: string;
+  meetingAccountInfo?: MeetingAccountInfo;
 }
 
 export function TransactionSummaryCard({
@@ -24,20 +32,23 @@ export function TransactionSummaryCard({
   amount,
   depositDescription,
   withdrawDescription,
+  meetingAccountInfo,
 }: TransactionSummaryCardProps) {
-  // 은행 코드 추출 (은행명에서)
-  const fromBankCode = getBankCode(fromBank);
-  const toBankCode = getBankCode(toBank);
-  
-  // 로고 가져오기
-  const fromBankLogo = fromBankCode ? getBankLogo(fromBankCode) : null;
-  const toBankLogo = toBankCode ? getBankLogo(toBankCode) : null;
+  // 은행 로고 가져오기
+  const fromBankLogo = getBankLogoByName(fromBank);
+  const toBankLogo = getBankLogoByName(toBank);
 
   return (
     <div className="space-y-2">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between">
         <span className="text-gray-600">
           {type === "deposit" ? "출금 계좌명" : "출금 계좌명"}
+        </span>
+        <span className="text-lg">{fromAccountName}</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-gray-600">
+          {type === "deposit" ? "출금 계좌번호" : "출금 계좌번호"}
         </span>
         <div className="flex items-center gap-2">
           {fromBankLogo ? (
@@ -55,14 +66,32 @@ export function TransactionSummaryCard({
               </span>
             </div>
           )}
-          <span className="text-lg">{fromAccountName}</span>
+          <span className="text-lg">{fromAccountNumber}</span>
         </div>
       </div>
+
       <div className="flex justify-between">
         <span className="text-gray-600">
-          {type === "deposit" ? "출금 계좌번호" : "출금 계좌번호"}
+          {type === "deposit" ? "입금 계좌번호" : "입금 계좌번호"}
         </span>
-        <span className="text-lg">{fromAccountNumber}</span>
+        <div className="flex items-center gap-2">
+          {toBankLogo ? (
+            <Image
+              src={toBankLogo}
+              alt={`${toBank} 로고`}
+              width={20}
+              height={20}
+              className="rounded-sm"
+            />
+          ) : (
+            <div className="w-5 h-5 bg-gray-200 rounded-sm flex items-center justify-center">
+              <span className="text-xs text-gray-500 font-medium">
+                {toBank.charAt(0)}
+              </span>
+            </div>
+          )}
+          <span className="text-lg">{toAccountNumber}</span>
+        </div>
       </div>
 
       <div className="flex justify-between">

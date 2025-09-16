@@ -9,8 +9,9 @@ import { TransactionSuccess } from "@/features/account/components/TransactionSuc
 import { PasswordModal } from "@/components/ui/PasswordModal";
 import { FormHeader } from "@/components/layout/FormHeader";
 import { StepIndicator } from "@/components/ui/StepIndicator";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { showWarningAlert, showErrorAlert } from "@/components/ui/CustomAlert";
-import { accountApi, MyAccountsResponse, DepositRequest } from "@/features/account/api/accountApi";
+import { accountApi, MyAccountsResponse, DepositRequest, AccountInfoResponse } from "@/features/account/api/accountApi";
 import { mapMyAccountsApiResponse } from "@/features/account/utils/accountMapper";
 import { authApi } from "@/lib/api/authApi";
 import { showSuccessToast, showErrorToast } from "@/components/ui/toast";
@@ -35,6 +36,11 @@ export default function DepositPage() {
   const [mappedAccounts, setMappedAccounts] = useState<any[]>([]);
   const [isLoadingAccounts, setIsLoadingAccounts] = useState(true);
   const [accountsError, setAccountsError] = useState<string | null>(null);
+
+  // 모임통장 정보 상태 관리
+  const [meetingAccountInfo, setMeetingAccountInfo] = useState<AccountInfoResponse | null>(null);
+  const [isLoadingMeetingAccount, setIsLoadingMeetingAccount] = useState(true);
+  const [meetingAccountError, setMeetingAccountError] = useState<string | null>(null);
 
   // 사용자 이름을 기본값으로 설정
   useEffect(() => {
@@ -64,9 +70,29 @@ export default function DepositPage() {
     }
   };
 
-  // 계좌 목록 로드
+  // 모임통장 정보 로드 함수
+  const loadMeetingAccountInfo = async () => {
+    try {
+      setIsLoadingMeetingAccount(true);
+      setMeetingAccountError(null);
+      
+      const response = await accountApi.getAccountInfo();
+      if (response.data) {
+        setMeetingAccountInfo(response.data);
+      }
+    } catch (err) {
+      console.error('모임통장 정보 로드 실패:', err);
+      setMeetingAccountError('모임통장 정보를 불러오는데 실패했습니다.');
+      showErrorToast('모임통장 정보를 불러오는데 실패했습니다.');
+    } finally {
+      setIsLoadingMeetingAccount(false);
+    }
+  };
+
+  // 계좌 목록 및 모임통장 정보 로드
   useEffect(() => {
     handleAccountsRefresh();
+    loadMeetingAccountInfo();
   }, []);
 
   // 계좌 목록 (매핑된 데이터 사용)
@@ -169,6 +195,23 @@ export default function DepositPage() {
     router.push("/account");
   };
 
+  // 로딩 중일 때 전체 페이지를 로딩 스피너로 덮기
+  if (isLoadingMeetingAccount) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <FormHeader title="채우기" useDefaultBack />
+        <LoadingSpinner text="로딩중..." variant="fullscreen" />
+      </div>
+    );
+  }
+
+  // 모임통장 정보를 MeetingAccountInfo 형태로 변환
+  const meetingAccountData = meetingAccountInfo ? {
+    bankName: meetingAccountInfo.bankName,
+    accountName: meetingAccountInfo.accountName,
+    accountNumber: meetingAccountInfo.accountNumber,
+  } : undefined;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -211,6 +254,7 @@ export default function DepositPage() {
               onBack={() => setStep(1)}
               onConfirm={handleDeposit}
               isLoading={isLoading}
+              meetingAccountInfo={meetingAccountData}
             />
           )}
 
@@ -222,6 +266,7 @@ export default function DepositPage() {
               depositDescription={depositDescription}
               withdrawDescription={withdrawDescription}
               onComplete={handleComplete}
+              meetingAccountInfo={meetingAccountData}
             />
           )}
 
