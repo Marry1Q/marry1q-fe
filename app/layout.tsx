@@ -45,10 +45,6 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Gowun+Dodum:wght@400&display=swap"
           rel="stylesheet"
         />
-        <script
-          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
-          async
-        />
       </head>
       <body
         style={{

@@ -294,6 +294,8 @@ export default function EditInvitationPage() {
         weddingLocation: invitationData.venue,
         venue: invitationData.venue,
         venueAddress: invitationData.venueAddress,
+        venueLatitude: invitationData.venueLatitude,
+        venueLongitude: invitationData.venueLongitude,
         message: invitationData.message,
         groomPhone: invitationData.contact.groom,
         bridePhone: invitationData.contact.bride,

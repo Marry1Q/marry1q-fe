@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar24 } from "@/components/ui/Calendar24"
+import AddressSearchButton from "../card/location/AddressSearchButton"
+import dynamic from "next/dynamic"
+import { useCallback } from "react"
 
 import { GroomInfoCard } from "../card/GroomInfoCard"
 import { BrideInfoCard } from "../card/BrideInfoCard"
@@ -26,6 +29,12 @@ export function BasicInfoForm({
   isCalendarOpen, 
   setIsCalendarOpen 
 }: BasicInfoFormProps) {
+  // 프리뷰는 왼쪽 카드에만 표시하므로 폼 내 지도는 제거
+  const handleAddressSelected = useCallback(({ address, lat, lng }: { address: string; lat?: number; lng?: number }) => {
+    if (address !== undefined) updateInvitationData("venueAddress", address)
+    if (lat !== undefined) updateInvitationData("venueLatitude", lat)
+    if (lng !== undefined) updateInvitationData("venueLongitude", lng)
+  }, [updateInvitationData])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -104,12 +113,24 @@ export function BasicInfoForm({
           </div>
           <div>
             <Label htmlFor="venueAddress">주소</Label>
-            <Input
-              id="venueAddress"
-              value={invitationData.venueAddress}
-              onChange={(e) => updateInvitationData("venueAddress", e.target.value)}
-              className="mt-2"
-            />
+            {invitationData.venueAddress ? (
+              <div className="mt-2 flex gap-2">
+                <Input
+                  id="venueAddress"
+                  value={invitationData.venueAddress}
+                  onChange={(e) => updateInvitationData("venueAddress", e.target.value)}
+                  className="flex-1"
+                  placeholder="도로명 주소를 선택하세요"
+                  readOnly
+                />
+                <AddressSearchButton onSelected={handleAddressSelected} address={invitationData.venueAddress} />
+              </div>
+            ) : (
+              <div className="mt-2">
+                <AddressSearchButton onSelected={handleAddressSelected} address={invitationData.venueAddress} className="w-full" />
+              </div>
+            )}
+            {/* 좌표 표기는 제거, 지도 프리뷰는 왼쪽 카드에서만 표시 */}
           </div>
         </CardContent>
       </Card>

@@ -8,6 +8,8 @@ export interface CreateInvitationRequest {
   weddingTime: string; // "HH:mm" 형식
   weddingHall: string;
   venueAddress: string;
+  venueLatitude?: number; // 장소 위도
+  venueLongitude?: number; // 장소 경도
   accountMessage?: string;
   groomName: string;
   groomPhone?: string;
@@ -30,6 +32,8 @@ export interface UpdateInvitationRequest {
   weddingTime?: string; // "HH:mm" 형식
   weddingHall?: string;
   venueAddress?: string;
+  venueLatitude?: number; // 장소 위도
+  venueLongitude?: number; // 장소 경도
   accountMessage?: string;
   groomName?: string;
   groomPhone?: string;
@@ -53,6 +57,8 @@ export interface InvitationResponse {
   weddingTime: string; // "HH:mm:ss" 형식 (LocalTime)
   weddingHall: string;
   venueAddress: string;
+  venueLatitude?: number; // 장소 위도
+  venueLongitude?: number; // 장소 경도
   mainImageUrl?: string;
   accountMessage?: string;
   totalViews: number;

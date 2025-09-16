@@ -130,6 +130,8 @@ export default function CreateInvitationPage() {
       weddingTime: invitationData.weddingTime,
       venue: invitationData.venue,
       venueAddress: invitationData.venueAddress,
+      venueLatitude: invitationData.venueLatitude,
+      venueLongitude: invitationData.venueLongitude,
       message: invitationData.message,
       accountMessage: invitationData.accountMessage,
       groomParentsDetail: invitationData.groomParents,

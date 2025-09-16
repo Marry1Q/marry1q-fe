@@ -14,6 +14,8 @@ export interface InvitationData {
   weddingTime: string
   venue: string
   venueAddress: string
+  venueLatitude?: number
+  venueLongitude?: number
   groomParents: {
     father: string
     mother: string
