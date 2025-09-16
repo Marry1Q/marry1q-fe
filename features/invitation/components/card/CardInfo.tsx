@@ -40,7 +40,7 @@ export function CardInfo({ weddingDate, weddingTime, venue, venueAddress, messag
           <p className="text-lg mb-4 text-center" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
             DATE & TIME
           </p>
-          <p className="text-lg text-gray-600 mb-6 text-center">
+          <p className="text-base text-gray-600 mb-6 text-center">
             {format(weddingDate, "yyyy년 MM월 dd일 (E)", { locale: ko })} {formatWeddingTime(weddingTime)}
           </p>
         </div>
@@ -50,8 +50,7 @@ export function CardInfo({ weddingDate, weddingTime, venue, venueAddress, messag
           <p className="text-lg mb-4 text-center" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
             LOCATION
           </p>
-          <p className="text-lg text-gray-600 mb-4 text-center">{venue}</p>
-          <p className="text-gray-600 text-lg text-center">{venueAddress}</p>
+          <p className="text-base text-gray-600 mb-4 text-center">{venue} {venueAddress}</p>
         </div>
         
         
