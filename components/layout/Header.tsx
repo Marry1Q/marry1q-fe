@@ -30,11 +30,14 @@ export function Header({ onMenuClick }: HeaderProps) {
       <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <img src="/Marry1Q_logo.png" alt="Marry1Q" className="w-8 ml-1" />
         <h1
-          className="text-2xl font-bold text-gray-800 ml-1"
+          className="text-2xl font-bold text-gray-800 ml-1 mr-0"
           style={{ fontFamily: "Hana2-CM" }}
         >
-          Marry1Q
+          Marry
         </h1>
+        <img src="/1q_logo.png" alt="1Q" className="w-8 -ml-2" />
+        {/* 기존 버전: <h1 className="text-2xl font-bold text-gray-800 ml-1" style={{ fontFamily: "Hana2-CM" }}>Marry1Q</h1> */}
+
       </Link>
       <div className="flex items-center gap-2">
         <Button

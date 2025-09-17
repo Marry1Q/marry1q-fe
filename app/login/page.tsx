@@ -143,12 +143,16 @@ export default function LoginPage() {
                 
                 {/* 서비스 소개 */}
                 <div className="text-left space-y-4">
-                  <h1 
-                    className="text-3xl lg:text-4xl font-bold text-gray-700"
-                    style={{ fontFamily: "Hana2-CM" }}
-                  >
-                    Marry1Q
-                  </h1>
+                  <div className="flex items-center">
+                    <h1 
+                      className="text-3xl lg:text-4xl font-bold text-gray-700 mr-0"
+                      style={{ fontFamily: "Hana2-CM" }}
+                    >
+                      Marry
+                    </h1>
+                    <img src="/1q_logo.png" alt="1Q" className="w-8 lg:w-12" />
+                  </div>
+                  {/* 기존 버전: <h1 className="text-3xl lg:text-4xl font-bold text-gray-700" style={{ fontFamily: "Hana2-CM" }}>Marry1Q</h1> */}
                   <p
                     className="text-xl text-gray-700"
                     style={{ fontFamily: "Hana2-CM" }}
