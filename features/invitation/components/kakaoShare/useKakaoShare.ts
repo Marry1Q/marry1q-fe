@@ -121,8 +121,28 @@ export function useKakaoShare() {
     
     try {
       const Kakao = getKakao();
-      Kakao!.Share.sendCustom({ templateId, templateArgs });
-      console.log('✅ 카카오 공유 전송 완료');
+      
+      // 카카오 SDK의 sendCustom 함수 사용 (팝업 창으로 열리도록 설정)
+      Kakao!.Share.sendCustom({ 
+        templateId, 
+        templateArgs,
+        serverCallbackArgs: {
+          // 팝업 창으로 열기 위한 옵션
+          popup: true,
+          width: 400,
+          height: 600,
+          left: 100,
+          top: 100,
+          scrollbars: 'yes',
+          resizable: 'yes',
+          status: 'yes',
+          location: 'yes',
+          toolbar: 'no',
+          menubar: 'no'
+        }
+      });
+      
+      console.log('✅ 카카오 공유 전송 완료 (새창)');
       return true;
     } catch (e) {
       console.error('❌ 카카오 공유 전송 실패:', e);
