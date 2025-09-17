@@ -184,29 +184,36 @@ export default function CreateInvitationPage() {
       // 날짜 형식 변환
       const weddingDate = invitationData.weddingDate ? invitationData.weddingDate.toISOString().split('T')[0] : "";
       
-      const createData = {
+      const invitationDataForApi = {
         title: invitationData.title,
         invitationMessage: invitationData.message,
         weddingDate: weddingDate,
         weddingTime: invitationData.weddingTime,
         weddingHall: invitationData.venue,
         venueAddress: invitationData.venueAddress,
+        venueLatitude: invitationData.venueLatitude, // 위도
+        venueLongitude: invitationData.venueLongitude, // 경도
         accountMessage: invitationData.accountMessage,
         groomName: invitationData.groomName,
         groomPhone: invitationData.contact.groom,
         groomFatherName: invitationData.groomParents.father,
         groomMotherName: invitationData.groomParents.mother,
-        groomAccount: invitationData.accountInfo.groom.accountNumber, // 계좌번호 필드명 확인
+        groomAccount: invitationData.accountInfo.groom.accountNumber,
         brideName: invitationData.brideName,
         bridePhone: invitationData.contact.bride,
         brideFatherName: invitationData.brideParents.father,
         brideMotherName: invitationData.brideParents.mother,
-        brideAccount: invitationData.accountInfo.bride.accountNumber, // 계좌번호 필드명 확인
+        brideAccount: invitationData.accountInfo.bride.accountNumber,
       };
       
-      console.log('API 요청 데이터:', createData);
-      console.log('계좌번호 확인 - 신랑:', createData.groomAccount);
-      console.log('계좌번호 확인 - 신부:', createData.brideAccount);
+      console.log('🔍 생성 페이지 위도/경도 디버깅:');
+      console.log('  - invitationData.venueLatitude:', invitationData.venueLatitude);
+      console.log('  - invitationData.venueLongitude:', invitationData.venueLongitude);
+      console.log('  - invitationDataForApi.venueLatitude:', invitationDataForApi.venueLatitude);
+      console.log('  - invitationDataForApi.venueLongitude:', invitationDataForApi.venueLongitude);
+      console.log('API 요청 데이터:', invitationDataForApi);
+      console.log('계좌번호 확인 - 신랑:', invitationDataForApi.groomAccount);
+      console.log('계좌번호 확인 - 신부:', invitationDataForApi.brideAccount);
       console.log('프론트엔드 계좌번호 데이터 - 신랑:', invitationData.accountInfo.groom);
       console.log('프론트엔드 계좌번호 데이터 - 신부:', invitationData.accountInfo.bride);
       
@@ -214,7 +221,7 @@ export default function CreateInvitationPage() {
       const mainImageFile = mainImageState.file || undefined;
       console.log('이미지 파일:', mainImageFile ? `${mainImageFile.name} (${mainImageFile.size} bytes)` : '없음');
       
-      const success = await addInvitation(createData, mainImageFile);
+      const success = await addInvitation(invitationDataForApi, mainImageFile);
       
       if (success) {
         console.log('청첩장 생성 성공!');

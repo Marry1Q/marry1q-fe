@@ -47,6 +47,8 @@ export default function PublicInvitationPage() {
           console.log('계좌번호 확인 - 신랑:', invitationData.groomAccount);
           console.log('계좌번호 확인 - 신부:', invitationData.brideAccount);
           console.log('accountInfo 확인:', invitationData.accountInfo);
+          console.log('좌표 확인 - 위도:', invitationData.venueLatitude);
+          console.log('좌표 확인 - 경도:', invitationData.venueLongitude);
           setInvitation(invitationData);
         } else {
           setError('청첩장을 찾을 수 없습니다.');
@@ -131,6 +133,8 @@ export default function PublicInvitationPage() {
     weddingLocation: invitation.weddingLocation || invitation.weddingHall,
     venue: invitation.venue || invitation.weddingHall,
     venueAddress: invitation.venueAddress,
+    venueLatitude: invitation.venueLatitude,
+    venueLongitude: invitation.venueLongitude,
     message: invitation.message || invitation.invitationMessage,
     groomName: invitation.groomName,
     brideName: invitation.brideName,

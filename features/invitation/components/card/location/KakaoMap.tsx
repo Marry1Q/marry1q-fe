@@ -38,14 +38,51 @@ const KakaoMap = ({ latitude, longitude, venue, venueAddress }: KakaoMapProps) =
     latitude >= -90 && latitude <= 90 && 
     longitude >= -180 && longitude <= 180;
 
+  // 카카오맵 SDK 로드 상태 확인
+  useEffect(() => {
+    const checkKakaoLoaded = () => {
+      if (typeof window !== 'undefined' && window.kakao) {
+        console.log('✅ 카카오맵 SDK 로드 완료 (이미 로드됨)');
+        setIsLoaded(true);
+        return true;
+      }
+      return false;
+    };
+
+    // 즉시 확인 (이미 로드된 경우)
+    if (checkKakaoLoaded()) return;
+
+    // 주기적으로 확인 (새로 로드되는 경우)
+    const interval = setInterval(() => {
+      if (checkKakaoLoaded()) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    // 5초 후 타임아웃
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      if (!isLoaded) {
+        console.warn('⚠️ 카카오맵 SDK 로드 타임아웃');
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [isLoaded]);
+
   useEffect(() => {
     // 환경변수 확인
-    console.log('🔍 환경변수 확인:', {
+    console.log('🔍 KakaoMap 환경변수 확인:', {
       NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY: process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY,
       KAKAO_SDK_URL: KAKAO_SDK_URL,
       latitude,
       longitude,
-      hasValidCoordinates
+      hasValidCoordinates,
+      mapLatitude,
+      mapLongitude
     });
 
     if (!process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY) {
@@ -61,6 +98,13 @@ const KakaoMap = ({ latitude, longitude, venue, venueAddress }: KakaoMapProps) =
     if (!(typeof window !== 'undefined' && window.kakao)) return;
 
     try {
+      console.log('🔍 KakaoMap 마커 생성:', {
+        mapLatitude,
+        mapLongitude,
+        venue,
+        venueAddress
+      });
+
       if (infoRef.current) { infoRef.current.close?.(); infoRef.current = null; }
       if (markerRef.current) { markerRef.current.setMap?.(null); markerRef.current = null; }
 
@@ -77,8 +121,9 @@ const KakaoMap = ({ latitude, longitude, venue, venueAddress }: KakaoMapProps) =
       }
 
       mapRef.current.setCenter(position);
+      console.log('✅ KakaoMap 마커 생성 완료:', position);
     } catch (e) {
-      console.error('좌표 변경에 따른 마커 업데이트 실패', e);
+      console.error('❌ 좌표 변경에 따른 마커 업데이트 실패', e);
     }
   }, [isLoaded, mapLatitude, mapLongitude, venue, venueAddress]);
 
@@ -94,9 +139,9 @@ const KakaoMap = ({ latitude, longitude, venue, venueAddress }: KakaoMapProps) =
     <>
       <Script 
         src={KAKAO_SDK_URL} 
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         onLoad={() => {
-          console.log('✅ 카카오맵 SDK 로드 완료');
+          console.log('✅ 카카오맵 SDK 로드 완료 (새로 로드됨)');
           setIsLoaded(true);
         }}
         onError={(e) => {
@@ -112,6 +157,13 @@ const KakaoMap = ({ latitude, longitude, venue, venueAddress }: KakaoMapProps) =
             level={3}
             onCreate={(map) => {
               mapRef.current = map;
+              console.log('🔍 KakaoMap 초기 생성:', {
+                mapLatitude,
+                mapLongitude,
+                venue,
+                venueAddress
+              });
+              
               // 최초 생성 시에도 현재 좌표로 마커 동기화
               if (typeof window !== 'undefined' && window.kakao) {
                 try {
@@ -131,8 +183,9 @@ const KakaoMap = ({ latitude, longitude, venue, venueAddress }: KakaoMapProps) =
                     infoRef.current = info;
                   }
                   map.setCenter(position);
+                  console.log('✅ KakaoMap 초기 마커 생성 완료:', position);
                 } catch (e) {
-                  console.error('마커 초기화 실패', e);
+                  console.error('❌ 마커 초기화 실패', e);
                 }
               }
             }}
