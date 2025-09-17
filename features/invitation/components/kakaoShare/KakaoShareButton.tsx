@@ -2,8 +2,7 @@
 
 import { ShareButton } from "./ShareButton";
 import { MessageCircle } from "lucide-react";
-import { useKakaoModal } from "./hooks/useKakaoModal";
-import { KakaoShareModal } from "./KakaoShareModal";
+import { useKakaoShare } from "./useKakaoShare";
 
 interface KakaoShareButtonProps {
   templateId: number;
@@ -16,39 +15,37 @@ export function KakaoShareButton({
   templateArgs, 
   className 
 }: KakaoShareButtonProps) {
-  const { 
-    isModalOpen, 
-    isLoading, 
-    error, 
-    openKakaoShare, 
-    closeModal 
-  } = useKakaoModal();
+  const { sendCustom, isReady } = useKakaoShare();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     console.log('🔄 카카오 공유 버튼 클릭:', { templateId, templateArgs });
-    openKakaoShare(templateId, templateArgs);
+    
+    if (!isReady()) {
+      console.error('❌ 카카오 SDK가 준비되지 않음');
+      return;
+    }
+
+    try {
+      const success = await sendCustom(templateId, templateArgs);
+      if (success) {
+        console.log('✅ 카카오 공유 성공');
+      } else {
+        console.error('❌ 카카오 공유 실패');
+      }
+    } catch (error) {
+      console.error('❌ 카카오 공유 오류:', error);
+    }
   };
 
   return (
-    <>
-      <ShareButton
-        id="kakao-share-button"
-        icon={<MessageCircle className="w-6 h-6" fill="currentColor" />}
-        backgroundColor="#FEE500"
-        hoverColor="#FDD835"
-        iconColor="#3C1E1E"
-        onClick={handleClick}
-        className={className}
-      />
-      
-      <KakaoShareModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        templateId={templateId}
-        templateArgs={templateArgs}
-        isLoading={isLoading}
-        error={error}
-      />
-    </>
+    <ShareButton
+      id="kakao-share-button"
+      icon={<MessageCircle className="w-6 h-6" fill="currentColor" />}
+      backgroundColor="#FEE500"
+      hoverColor="#FDD835"
+      iconColor="#3C1E1E"
+      onClick={handleClick}
+      className={className}
+    />
   );
 }
