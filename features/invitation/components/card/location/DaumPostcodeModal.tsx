@@ -32,7 +32,7 @@ export default function DaumPostcodeModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl p-0">
         <DialogHeader className="px-6 pt-6">
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle style={{ fontFamily: "Hana2-CM" }}>{title}</DialogTitle>
         </DialogHeader>
         <div className="px-6 pb-6">
           <div className="w-full overflow-hidden rounded border" style={{ height }}>

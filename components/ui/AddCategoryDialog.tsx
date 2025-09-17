@@ -29,13 +29,10 @@ export function AddCategoryDialog({ onCategoryAdded }: AddCategoryDialogProps) {
   const [selectedColor, setSelectedColor] = useState<string>("mint"); // 초기 색상을 mint로 설정
   const [isLoading, setIsLoading] = useState(false);
 
-  // 아이콘 선택 시 기본 색상 자동 설정
+  // 아이콘 선택 시 색상 자동 변경 제거
   const handleIconSelect = (iconName: string) => {
     setSelectedIcon(iconName);
-    // 아이콘에 대한 기본 색상이 있으면 자동으로 설정
-    if (iconName && iconDefaultColors[iconName as keyof typeof iconDefaultColors]) {
-      setSelectedColor(iconDefaultColors[iconName as keyof typeof iconDefaultColors]);
-    }
+    // 색상 자동 변경 로직 제거 - 사용자가 선택한 색상 유지
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

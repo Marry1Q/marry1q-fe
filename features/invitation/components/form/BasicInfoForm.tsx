@@ -88,7 +88,6 @@ export function BasicInfoForm({
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>날짜 및 시간</Label>
             <div className="mt-2">
               <Calendar24
                 date={invitationData.weddingDate}

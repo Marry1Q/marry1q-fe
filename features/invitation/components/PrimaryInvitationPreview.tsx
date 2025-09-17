@@ -145,13 +145,11 @@ export function PrimaryInvitationPreview({ invitation }: PrimaryInvitationPrevie
               style={{fontFamily: "Hana2-CM"}}>
                 {invitation.title || "제목이 없습니다"}
               </h3>
-              <p className="text-sm text-gray-600 text-center">
-                {formatWeddingDate(invitation.weddingDate || "")}
-                <br />
-                {formatWeddingTime(invitation.weddingTime)}
+              {/* <p className="text-sm text-gray-600 text-center">
+                {formatWeddingDate(invitation.weddingDate || "")} {formatWeddingTime(invitation.weddingTime)}
                 <br />
                 {invitation.weddingLocation || "장소 미정"} {invitation.venueAddress || ""}
-              </p>
+              </p> */}
 
               {/* 버튼들 */}
               <div className="flex gap-2 pt-3">
