@@ -40,10 +40,10 @@ export function CardContact({ contact, accountMessage, accountInfo, isPreview }:
   };
 
   // 기본 메시지
-  const defaultMessage = `참석이 어려워 직접 축하를 전하지 못하는<br />
-분들을 위해 계좌번호를 기재하였습니다.<br />
-넓은 마음으로 양해 부탁드립니다.<br />
-전해주시는 진심은 소중하게 간직하여<br />
+  const defaultMessage = `참석이 어려워 직접 축하를 전하지 못하는
+분들을 위해 계좌번호를 기재하였습니다.
+넓은 마음으로 양해 부탁드립니다.
+전해주시는 진심은 소중하게 간직하여
 좋은 부부의 모습으로 보답하겠습니다.`;
 
   // accountInfo가 없으면 빈 배열 반환
@@ -56,7 +56,6 @@ export function CardContact({ contact, accountMessage, accountInfo, isPreview }:
               ACCOUNT
             </p>
             <h2 className="text-xl font-bold text-gray-600">마음 전하실 곳</h2>
-            <div className="w-full h-px bg-gray-200 mt-4"></div>
           </div>
           <div className="mb-8 text-left">
             <p className="text-sm text-gray-700 leading-relaxed text-center">
@@ -96,18 +95,17 @@ export function CardContact({ contact, accountMessage, accountInfo, isPreview }:
           <p className="text-lg mb-4 text-center" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
             ACCOUNT
           </p>
-          <h2 className="text-xl font-bold text-gray-600">마음 전하실 곳</h2>
-          <div className="w-full h-px bg-gray-200 mt-4"></div>
+          <div 
+            className="text-base text-gray-800 leading-relaxed text-center"
+            dangerouslySetInnerHTML={{ 
+              __html: (accountMessage || defaultMessage).replace(/\n/g, '<br>')
+            }}
+          />
         </div>
         
         {/* 안내 메시지 */}
         <div className="mb-8 text-left">
-          <p 
-            className="text-sm text-gray-700 leading-relaxed text-center"
-            dangerouslySetInnerHTML={{ 
-              __html: accountMessage || defaultMessage 
-            }}
-          />
+          
         </div>
         
         {/* 신랑측 계좌 */}

@@ -112,6 +112,38 @@ export function CardHero({ invitation, uploadedPhotos = [], isPreview }: CardHer
           </div>
         )}
       </div>
+
+      {/* 메시지 영역 */}
+        <div className="text-center mt-12">
+          <p className="text-lg mb-4" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
+            INVITE YOU
+          </p>
+        </div>
+      <div className="text-center space-y-4 mb-12">
+          {currentInvitation.message ? (
+            <div 
+              className="text-base text-gray-800 leading-relaxed"
+              dangerouslySetInnerHTML={{ 
+                __html: currentInvitation.message.replace(/\n/g, '<br>')
+              }}
+            />
+          ) : (
+            <>
+              <p className="text-base text-gray-800 leading-relaxed">
+                저희 두 사람이 평생을 함께하기 위해<br />
+                서로의 반려자가 되려 합니다.
+              </p>
+              <p className="text-base text-gray-800 leading-relaxed">
+                그 진실한 서약을 하는 자리에<br />
+                소중한 분들을 모십니다.
+              </p>
+              <p className="text-base text-gray-800 leading-relaxed">
+                자리하시어 축복해 주시면<br />
+                대단히 감사하겠습니다.
+              </p>
+            </>
+          )}
+        </div>
       
       {/* 신랑신부 정보 - 새로운 레이아웃 */}
       <div className="relative flex flex-col items-center justify-center bg-white mb-12">     
@@ -179,34 +211,7 @@ export function CardHero({ invitation, uploadedPhotos = [], isPreview }: CardHer
           </div>
         </div>       
       </div>
-      {/* 메시지 영역 */}
-      <div className="text-center mt-12">
-          <p className="text-lg mb-4" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
-            INVITE YOU
-          </p>
-        </div>
-      <div className="text-center space-y-4">
-          {currentInvitation.message ? (
-            <div className="text-base text-gray-800 leading-relaxed whitespace-pre-line">
-              {currentInvitation.message}
-            </div>
-          ) : (
-            <>
-              <p className="text-base text-gray-800 leading-relaxed">
-                저희 두 사람이 평생을 함께하기 위해<br />
-                서로의 반려자가 되려 합니다.
-              </p>
-              <p className="text-base text-gray-800 leading-relaxed">
-                그 진실한 서약을 하는 자리에<br />
-                소중한 분들을 모십니다.
-              </p>
-              <p className="text-base text-gray-800 leading-relaxed">
-                자리하시어 축복해 주시면<br />
-                대단히 감사하겠습니다.
-              </p>
-            </>
-          )}
-        </div>
+
     </section>
   );
 }

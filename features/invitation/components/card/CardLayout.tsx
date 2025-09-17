@@ -11,6 +11,8 @@ interface CardLayoutProps {
     weddingTime?: string;
     venue?: string;
     venueAddress?: string;
+    venueLatitude?: number;
+    venueLongitude?: number;
     message?: string;
     accountMessage?: string;
     contact?: {
@@ -90,6 +92,8 @@ export function CardLayout({ invitationData, uploadedPhotos, shareImage, isPrevi
         venue={invitationData.venue || invitationData.weddingLocation || ""}
         venueAddress={invitationData.venueAddress || ""}
         message={invitationData.message || "저희 두 사람이 평생을 함께하기 위해 서로의 반려자가 되려 합니다."}
+        venueLatitude={invitationData.venueLatitude}
+        venueLongitude={invitationData.venueLongitude}
         isPreview={isPreview}
       />
       

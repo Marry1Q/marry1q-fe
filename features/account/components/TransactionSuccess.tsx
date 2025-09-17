@@ -4,6 +4,13 @@ import { TransactionSummaryCard } from "./TransactionSummaryCard";
 import { TransactionType, Account } from "@/features/account/types";
 import { getBankName } from "../utils/bankUtils";
 
+// TransactionSummaryCard에서 사용할 모임통장 정보 타입
+interface MeetingAccountInfo {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+}
+
 interface TransactionSuccessProps {
   type: TransactionType;
   selectedAccount: Account;
@@ -11,6 +18,7 @@ interface TransactionSuccessProps {
   depositDescription?: string;
   withdrawDescription?: string;
   onComplete: () => void;
+  meetingAccountInfo?: MeetingAccountInfo;
 }
 
 export function TransactionSuccess({
@@ -20,6 +28,7 @@ export function TransactionSuccess({
   depositDescription,
   withdrawDescription,
   onComplete,
+  meetingAccountInfo,
 }: TransactionSuccessProps) {
   return (
     <div className="text-center space-y-6">
@@ -39,27 +48,28 @@ export function TransactionSuccess({
           <TransactionSummaryCard
             type={type}
             fromBank={
-              type === "deposit" ? getBankName(selectedAccount.bank) || selectedAccount.bank : "하나은행 모임통장"
+              type === "deposit" ? getBankName(selectedAccount.bank) || selectedAccount.bank : meetingAccountInfo?.bankName || "하나은행 모임통장"
             }
             fromAccountName={
-              type === "deposit" ? selectedAccount.accountName : "모임통장"
+              type === "deposit" ? selectedAccount.accountName : meetingAccountInfo?.accountName || "모임통장"
             }
             fromAccountNumber={
               type === "deposit"
                 ? selectedAccount.accountNumber
-                : "110-123-456789"
+                : meetingAccountInfo?.accountNumber || "110-123-456789"
             }
             toBank={
-              type === "deposit" ? "하나은행 모임통장" : getBankName(selectedAccount.bank) || selectedAccount.bank
+              type === "deposit" ? meetingAccountInfo?.bankName || "하나은행 모임통장" : getBankName(selectedAccount.bank) || selectedAccount.bank
             }
             toAccountNumber={
               type === "deposit"
-                ? "110-123-456789"
+                ? meetingAccountInfo?.accountNumber || "110-123-456789"
                 : selectedAccount.accountNumber
             }
             amount={amount}
             depositDescription={depositDescription}
             withdrawDescription={withdrawDescription}
+            meetingAccountInfo={meetingAccountInfo}
           />
         </CardContent>
       </Card>

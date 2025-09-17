@@ -57,12 +57,21 @@ export function IconSelector({
     setSearchQuery("");
   };
 
+  // 드롭다운을 열 때 기본 색상을 mint로 설정
+  const handleDropdownToggle = () => {
+    if (!isOpen) {
+      // 드롭다운을 열 때 항상 기본값을 mint로 설정
+      onColorSelect('mint');
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className={cn("relative", className)} ref={dropdownRef}>
       {/* 선택된 아이콘 표시 - 원형 배경 추가 */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleDropdownToggle}
         className="w-full h-12 border border-gray-300 rounded-full bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors flex items-center justify-center"
       >
         <FinanceCategoryIcon 
@@ -75,7 +84,7 @@ export function IconSelector({
 
       {/* 드롭다운 */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 w-80">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 w-96">
           {/* 탭 헤더 */}
           <div className="flex border-b border-gray-200">
             <button
@@ -108,16 +117,16 @@ export function IconSelector({
           <div className="p-3">
             {activeTab === 'icon' ? (
               /* 아이콘 탭 */
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-4 gap-3 max-h-64 overflow-y-auto">
                 {filteredIcons.map((iconName) => (
                   <button
                     key={iconName}
                     onClick={() => handleIconSelect(iconName)}
                     className={cn(
-                      "w-10 h-10 rounded-lg transition-all duration-200 hover:scale-105 hover:bg-gray-50 flex items-center justify-center",
+                      "w-16 h-16 rounded-lg transition-all duration-200 hover:scale-105 hover:bg-gray-50 flex items-center justify-center",
                       selectedIcon === iconName
-                        ? "bg-blue-50 ring-2 ring-blue-500"
-                        : "hover:bg-gray-50"
+                        ? "bg-blue-50 border-2 border-blue-500"
+                        : "hover:bg-gray-50 border-2 border-transparent"
                     )}
                     title={iconName}
                   >
@@ -125,7 +134,7 @@ export function IconSelector({
                       iconName={iconName} 
                       colorName={selectedColor}
                       variant="select"
-                      size={16}
+                      size={28}
                     />
                   </button>
                 ))}

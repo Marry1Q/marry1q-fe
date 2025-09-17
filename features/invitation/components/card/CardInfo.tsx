@@ -2,6 +2,7 @@ import React from "react";
 import { CalendarIcon, Clock, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { LocationSection } from "./location";
 
 interface CardInfoProps {
   weddingDate: Date;
@@ -9,10 +10,12 @@ interface CardInfoProps {
   venue: string;
   venueAddress: string;
   message: string;
+  venueLatitude?: number;
+  venueLongitude?: number;
   isPreview?: boolean;
 }
 
-export function CardInfo({ weddingDate, weddingTime, venue, venueAddress, message, isPreview }: CardInfoProps) {
+export function CardInfo({ weddingDate, weddingTime, venue, venueAddress, message, venueLatitude, venueLongitude, isPreview }: CardInfoProps) {
   // 시간 포맷팅 함수
   const formatWeddingTime = (time: string): string => {
     if (!time) return "";
@@ -40,19 +43,19 @@ export function CardInfo({ weddingDate, weddingTime, venue, venueAddress, messag
           <p className="text-lg mb-4 text-center" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
             DATE & TIME
           </p>
-          <p className="text-lg text-gray-600 mb-6 text-center">
+          <p className="text-base text-gray-600 mb-6 text-center">
             {format(weddingDate, "yyyy년 MM월 dd일 (E)", { locale: ko })} {formatWeddingTime(weddingTime)}
           </p>
         </div>
         
         {/* 장소 */}
-        <div className="mb-12">
-          <p className="text-lg mb-4 text-center" style={{ fontFamily: 'Bona Nova SC', color: '#d099a1' }}>
-            LOCATION
-          </p>
-          <p className="text-lg text-gray-600 mb-4 text-center">{venue}</p>
-          <p className="text-gray-600 text-lg text-center">{venueAddress}</p>
-        </div>
+        <LocationSection
+          venue={venue}
+          venueAddress={venueAddress}
+          venueLatitude={venueLatitude}
+          venueLongitude={venueLongitude}
+          isPreview={isPreview}
+        />
         
         
       </div>

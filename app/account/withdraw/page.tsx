@@ -255,6 +255,13 @@ export default function WithdrawPage() {
     balanceStatus: "NORMAL"
   };
 
+  // 모임통장 정보를 MeetingAccountInfo 형태로 변환
+  const meetingAccountData = accountInfo ? {
+    bankName: accountInfo.bankName,
+    accountName: accountInfo.accountName,
+    accountNumber: accountInfo.accountNumber,
+  } : undefined;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -302,6 +309,7 @@ export default function WithdrawPage() {
               onBack={() => setStep(2)}
               onConfirm={handleWithdraw}
               isLoading={isLoading}
+              meetingAccountInfo={meetingAccountData}
             />
           )}
 
@@ -313,6 +321,7 @@ export default function WithdrawPage() {
               depositDescription={depositDescription}
               withdrawDescription={withdrawDescription}
               onComplete={handleComplete}
+              meetingAccountInfo={meetingAccountData}
             />
           )}
 

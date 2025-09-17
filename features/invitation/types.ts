@@ -8,6 +8,8 @@ export interface Invitation {
   weddingTime: string; // "HH:mm:ss" 형식 (LocalTime)
   weddingHall: string;
   venueAddress: string;
+  venueLatitude?: number; // 장소 위도
+  venueLongitude?: number; // 장소 경도
   mainImageUrl?: string; // 백엔드 DTO와 일치
   accountMessage?: string;
   totalViews: number;

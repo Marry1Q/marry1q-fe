@@ -19,6 +19,8 @@ export const mapApiResponseToInvitation = (apiResponse: InvitationResponse): Inv
     weddingTime: formatWeddingTime(apiResponse.weddingTime),
     weddingHall: apiResponse.weddingHall,
     venueAddress: apiResponse.venueAddress,
+    venueLatitude: apiResponse.venueLatitude,
+    venueLongitude: apiResponse.venueLongitude,
     mainImageUrl: apiResponse.mainImageUrl,
     accountMessage: apiResponse.accountMessage,
     totalViews: apiResponse.totalViews || 0, // 백엔드에서 제공하는 조회수 사용
@@ -96,14 +98,17 @@ export const mapApiResponseToInvitation = (apiResponse: InvitationResponse): Inv
 
 // 프론트엔드 타입을 백엔드 생성 요청으로 변환
 export const mapInvitationToCreateRequest = async (invitation: Partial<Invitation>): Promise<CreateInvitationRequest> => {
-  // coupleId는 백엔드에서 토큰에서 자동으로 가져오므로 제거
-  return {
+  console.log('🔍 매핑 전 데이터 (Create):', invitation);
+  
+  const result = {
     title: invitation.title || '',
     invitationMessage: invitation.invitationMessage || invitation.message,
     weddingDate: invitation.weddingDate || '',
     weddingTime: invitation.weddingTime || '',
     weddingHall: invitation.weddingHall || invitation.venue || '',
     venueAddress: invitation.venueAddress || '',
+    venueLatitude: invitation.venueLatitude, // 명시적으로 처리
+    venueLongitude: invitation.venueLongitude, // 명시적으로 처리
     accountMessage: invitation.accountMessage || '',
     groomName: invitation.groomName || '',
     groomPhone: invitation.groomPhone || invitation.contact?.groom || '',
@@ -116,17 +121,27 @@ export const mapInvitationToCreateRequest = async (invitation: Partial<Invitatio
     brideMotherName: invitation.brideMotherName || invitation.brideParentsDetail?.mother || '',
     brideAccount: invitation.brideAccount || invitation.accountInfo?.bride?.accountNumber || '', // 계좌번호 매핑 수정
   };
+  
+  console.log('🔍 매핑 후 데이터 (Create):', result);
+  console.log('  - venueLatitude:', result.venueLatitude);
+  console.log('  - venueLongitude:', result.venueLongitude);
+  
+  return result;
 };
 
 // 프론트엔드 타입을 백엔드 수정 요청으로 변환
 export const mapInvitationToUpdateRequest = async (invitation: Partial<Invitation>): Promise<UpdateInvitationRequest> => {
-  return {
+  console.log('🔍 매핑 전 데이터 (Update):', invitation);
+  
+  const result = {
     title: invitation.title,
     invitationMessage: invitation.invitationMessage || invitation.message,
     weddingDate: invitation.weddingDate,
     weddingTime: invitation.weddingTime,
     weddingHall: invitation.weddingHall || invitation.venue,
     venueAddress: invitation.venueAddress,
+    venueLatitude: invitation.venueLatitude, // 명시적으로 처리
+    venueLongitude: invitation.venueLongitude, // 명시적으로 처리
     accountMessage: invitation.accountMessage,
     groomName: invitation.groomName,
     groomPhone: invitation.groomPhone || invitation.contact?.groom,
@@ -139,6 +154,12 @@ export const mapInvitationToUpdateRequest = async (invitation: Partial<Invitatio
     brideMotherName: invitation.brideMotherName || invitation.brideParentsDetail?.mother,
     brideAccount: invitation.brideAccount || invitation.accountInfo?.bride?.accountNumber, // 계좌번호 매핑 수정
   };
+  
+  console.log('🔍 매핑 후 데이터 (Update):', result);
+  console.log('  - venueLatitude:', result.venueLatitude);
+  console.log('  - venueLongitude:', result.venueLongitude);
+  
+  return result;
 };
 
 // 기존 함수명 호환성을 위한 별칭

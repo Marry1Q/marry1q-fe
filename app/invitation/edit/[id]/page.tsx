@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Save } from "lucide-react"
 import type { InvitationData, ImageState } from "@/features/invitation/types/invitation"
 import { useInvitationData } from "@/lib/hooks/useInvitationData"
-import { mapApiResponseToInvitation, mapInvitationToUpdateRequest } from "@/features/invitation/utils/invitationMapper"
+import { mapApiResponseToInvitation } from "@/features/invitation/utils/invitationMapper"
 import { useAuth } from "@/lib/hooks/useAuth"
 import { toast } from "sonner"
 import { colors } from "@/constants/colors"
@@ -122,6 +122,11 @@ export default function EditInvitationPage() {
           console.log('Mapped mainImageUrl:', mappedInvitation.mainImageUrl);
           console.log('Mapped groomAccount:', mappedInvitation.groomAccount);
           console.log('Mapped brideAccount:', mappedInvitation.brideAccount);
+          console.log('🔍 위도/경도 매핑 확인:');
+          console.log('  - 백엔드 venueLatitude:', invitation.venueLatitude);
+          console.log('  - 백엔드 venueLongitude:', invitation.venueLongitude);
+          console.log('  - 매핑된 venueLatitude:', mappedInvitation.venueLatitude);
+          console.log('  - 매핑된 venueLongitude:', mappedInvitation.venueLongitude);
           setCurrentInvitation(mappedInvitation);
           
           // InvitationData 형태로 변환
@@ -133,6 +138,8 @@ export default function EditInvitationPage() {
             weddingTime: mappedInvitation.weddingTime || "",
             venue: mappedInvitation.venue || mappedInvitation.weddingHall || "",
             venueAddress: mappedInvitation.venueAddress || "",
+            venueLatitude: mappedInvitation.venueLatitude,
+            venueLongitude: mappedInvitation.venueLongitude,
             groomParents: {
               father: mappedInvitation.groomParentsDetail?.father || "",
               mother: mappedInvitation.groomParentsDetail?.mother || "",
@@ -294,6 +301,8 @@ export default function EditInvitationPage() {
         weddingLocation: invitationData.venue,
         venue: invitationData.venue,
         venueAddress: invitationData.venueAddress,
+        venueLatitude: invitationData.venueLatitude,
+        venueLongitude: invitationData.venueLongitude,
         message: invitationData.message,
         groomPhone: invitationData.contact.groom,
         bridePhone: invitationData.contact.bride,
@@ -327,31 +336,40 @@ export default function EditInvitationPage() {
     
     setIsSaving(true);
     try {
-      // 현재 invitationData를 백엔드 DTO 형태로 변환
-      const updateData = await mapInvitationToUpdateRequest({
+      // 현재 invitationData를 Invitation 형태로 변환
+      const invitationDataForApi = {
         title: invitationData.title,
         invitationMessage: invitationData.message,
         weddingDate: invitationData.weddingDate ? invitationData.weddingDate.toISOString().split('T')[0] : "",
         weddingTime: invitationData.weddingTime || format(invitationData.weddingDate, 'HH:mm'),
         weddingHall: invitationData.venue,
         venueAddress: invitationData.venueAddress,
+        venueLatitude: invitationData.venueLatitude, // 위도
+        venueLongitude: invitationData.venueLongitude, // 경도
         accountMessage: invitationData.accountMessage,
         groomName: invitationData.groomName,
         groomPhone: invitationData.contact.groom,
         groomFatherName: invitationData.groomParents.father,
         groomMotherName: invitationData.groomParents.mother,
-        groomAccount: invitationData.accountInfo.groom.accountNumber, // 계좌번호 필드명 확인
+        groomAccount: invitationData.accountInfo.groom.accountNumber,
         brideName: invitationData.brideName,
         bridePhone: invitationData.contact.bride,
         brideFatherName: invitationData.brideParents.father,
         brideMotherName: invitationData.brideParents.mother,
-        brideAccount: invitationData.accountInfo.bride.accountNumber, // 계좌번호 필드명 확인
-      });
+        brideAccount: invitationData.accountInfo.bride.accountNumber,
+      };
+      
+      console.log('🔍 수정 페이지 위도/경도 디버깅:');
+      console.log('  - invitationData.venueLatitude:', invitationData.venueLatitude);
+      console.log('  - invitationData.venueLongitude:', invitationData.venueLongitude);
+      console.log('  - invitationDataForApi.venueLatitude:', invitationDataForApi.venueLatitude);
+      console.log('  - invitationDataForApi.venueLongitude:', invitationDataForApi.venueLongitude);
+      console.log('API 요청 데이터:', invitationDataForApi);
       
       // 이미지 파일이 새로 업로드된 경우에만 전송
       const mainImageFile = newImageFile || undefined;
       
-      const success = await updateInvitation(invitationId, updateData, mainImageFile);
+      const success = await updateInvitation(invitationId, invitationDataForApi, mainImageFile);
       
       if (success) {
         toast.success("청첩장이 수정되었습니다!", {
