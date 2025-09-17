@@ -5,15 +5,15 @@ import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Marry1Q",
-  description: "결혼 준비 커플을 위한 스마트 예산 관리 앱",
+  description: "예비 신혼부부를 위한 결혼 준비 플랫폼",
   generator: "v0.dev",
   icons: {
-    icon: "/favicon-32x32.png",
-    apple: "/apple-icon-180x180.png",
+    icon: "/Users/bongwook/projects/marry1q-prod/marry1q-fe/public/favicon-32x32.png",
+    apple: "/Users/bongwook/projects/marry1q-prod/marry1q-fe/public/apple-icon-180x180.png",
   },
   openGraph: {
-    title: "Marry1Q - 결혼 준비를 위한 스마트한 시작",
-    description: "결혼 준비를 위한 스마트 예산 관리 앱",
+    title: "Marry1Q - 예비 신혼부부를 위한 결혼 준비 플랫폼",
+    description: "복잡한 결혼, 한 큐에 Marry1Q에서!",
     type: "website",
   },
 };
