@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 declare global {
   interface Window {
@@ -11,53 +11,31 @@ declare global {
 type TemplateArgs = Record<string, string | number | undefined>
 
 export function useKakaoShare() {
-  const initAttemptedRef = useRef(false);
 
+  // 카카오 SDK 준비 상태 확인 (초기화는 KakaoScriptLoader에서 담당)
   useEffect(() => {
-    const initializeKakao = () => {
-      if (initAttemptedRef.current) {
-        return;
+    const checkKakaoReady = () => {
+      if (typeof window !== 'undefined' && window.Kakao && window.Kakao.isInitialized && window.Kakao.isInitialized()) {
+        console.log('✅ 카카오 SDK 준비 완료');
+        return true;
       }
-      
-      if (!window.Kakao) {
-        return;
-      }
-      
-      initAttemptedRef.current = true;
-      const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
-      
-      if (key) {
-        try {
-          window.Kakao.init(key);
-          console.log('✅ 카카오 SDK 초기화 완료');
-        } catch (error) {
-          console.error('❌ 카카오 SDK 초기화 실패:', error);
-        }
-      } else {
-        console.error('❌ NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY가 설정되지 않음');
-      }
+      return false;
     };
-    
-    // 즉시 초기화 시도
-    initializeKakao();
-    
-    // SDK가 아직 로드되지 않았다면 재시도
-    if (!window.Kakao) {
-      const interval = setInterval(() => {
-        if (window.Kakao && !initAttemptedRef.current) {
-          initializeKakao();
-          clearInterval(interval);
-        }
-      }, 100);
-      
-      // 10초 후 타임아웃
-      setTimeout(() => {
+
+    // 즉시 확인
+    if (checkKakaoReady()) return;
+
+    // 주기적으로 확인
+    const interval = setInterval(() => {
+      if (checkKakaoReady()) {
         clearInterval(interval);
-        console.error('❌ 카카오 SDK 초기화 타임아웃');
-      }, 10000);
-      
-      return () => clearInterval(interval);
-    }
+      }
+    }, 100);
+
+    // 타임아웃 제거 - SDK가 이미 준비되었으므로 불필요
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const getKakao = () => (typeof window !== 'undefined' ? window.Kakao : undefined);
@@ -67,24 +45,12 @@ export function useKakaoShare() {
     return !!(Kakao && Kakao.isInitialized && Kakao.isInitialized());
   };
 
-  const tryInit = () => {
-    const Kakao = getKakao();
-    const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
-    
-    if (Kakao && Kakao.init && !Kakao.isInitialized() && key) {
-      try {
-        Kakao.init(key);
-      } catch (error) {
-        console.error('❌ 카카오 SDK 재초기화 실패:', error);
-      }
-    }
-  };
+  // 초기화는 KakaoScriptLoader에서 담당하므로 제거
 
   const waitForReady = async (timeoutMs = 5000, intervalMs = 100): Promise<boolean> => {
     const start = Date.now();
     
     while (Date.now() - start < timeoutMs) {
-      tryInit();
       if (isReady()) {
         return true;
       }
@@ -155,8 +121,28 @@ export function useKakaoShare() {
     
     try {
       const Kakao = getKakao();
-      Kakao!.Share.sendCustom({ templateId, templateArgs });
-      console.log('✅ 카카오 공유 전송 완료');
+      
+      // 카카오 SDK의 sendCustom 함수 사용 (팝업 창으로 열리도록 설정)
+      Kakao!.Share.sendCustom({ 
+        templateId, 
+        templateArgs,
+        serverCallbackArgs: {
+          // 팝업 창으로 열기 위한 옵션
+          popup: true,
+          width: 400,
+          height: 600,
+          left: 100,
+          top: 100,
+          scrollbars: 'yes',
+          resizable: 'yes',
+          status: 'yes',
+          location: 'yes',
+          toolbar: 'no',
+          menubar: 'no'
+        }
+      });
+      
+      console.log('✅ 카카오 공유 전송 완료 (새창)');
       return true;
     } catch (e) {
       console.error('❌ 카카오 공유 전송 실패:', e);
