@@ -37,11 +37,12 @@ export function GiftMoneyItem({ gift, onToggleThanks, onEdit, onDelete, isLast =
               />
             </button>
             <div>
+              <div className="flex items-center gap-2 ">
               <p className="font-medium" style={{fontFamily: 'Hana2-CM'}}>{gift.name}님</p>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span>{gift.relationshipDisplayName}</span>
-                <span>•</span>
-                <span>{gift.giftDate}</span>
+              <span className="text-sm text-gray-500">•</span>
+                <span className="text-sm text-gray-500">{gift.relationshipDisplayName}</span>
+                <span className="text-sm text-gray-500">•</span>
+                <span className="text-sm text-gray-500">{gift.giftDate}</span>
               </div>
               {gift.memo && <p className="text-sm text-gray-600 mt-1">메모: {gift.memo}</p>}
             </div>

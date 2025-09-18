@@ -41,6 +41,7 @@ interface DashboardInfoCardProps {
   onClick?: () => void;
   className?: string;
   disableHover?: boolean;
+  active?: boolean;
 }
 
 export function DashboardInfoCard({
@@ -56,6 +57,7 @@ export function DashboardInfoCard({
   onClick,
   className = "w-60 h-60",
   disableHover = false,
+  active = false,
 }: DashboardInfoCardProps) {
   const getBackgroundImagePosition = () => {
     if (!backgroundImage) return "";
@@ -131,6 +133,7 @@ export function DashboardInfoCard({
   };
 
   const [isHovered, setIsHovered] = useState(false);
+  const isHoverLike = (!disableHover && active) || (!disableHover && isHovered);
 
   const getTextColorClasses = () => {
     if (variant === "colored") {
@@ -142,8 +145,8 @@ export function DashboardInfoCard({
       };
     }
     
-    // 호버 상태이고 색상이 있는 경우 흰색 텍스트 사용
-    if (isHovered && !disableHover && color) {
+    // 호버 상태(혹은 active)이고 색상이 있는 경우 흰색 텍스트 사용
+    if (isHoverLike && color) {
       return {
         title: "text-white transition-colors duration-300",
         subtitle: "text-white transition-colors duration-300",
@@ -174,7 +177,7 @@ export function DashboardInfoCard({
           variant === "default" && "bg-white",
           variant === "colored" && "text-white"
         )}
-        style={isHovered && !disableHover ? getHoverColorStyle() : getColorStyle()}
+        style={isHoverLike ? getHoverColorStyle() : getColorStyle()}
         onMouseEnter={() => !disableHover && setIsHovered(true)}
         onMouseLeave={() => !disableHover && setIsHovered(false)}
       >

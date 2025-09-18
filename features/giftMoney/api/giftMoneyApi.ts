@@ -129,6 +129,42 @@ export interface GiftMoneyStatisticsResponse {
   lastGiftDate?: string;
 }
 
+// 안심계좌 거래내역 응답 타입
+export interface SafeAccountTransactionResponse {
+  transactionId: number;
+  type: string;
+  description: string;
+  amount: number;
+  transactionDate: string;
+  transactionTime: string;
+  fromName: string | null;
+  toName: string | null;
+  reviewStatus: 'PENDING' | 'REVIEWED';
+  memo: string | null;
+  balanceAfterTransaction: number;
+  isSafeAccountDeposit: 'PENDING' | 'REVIEWED';
+}
+
+// 안심계좌 거래내역 목록 응답 타입
+export interface SafeAccountTransactionListResponse {
+  content: SafeAccountTransactionResponse[];
+  pageInfo: {
+    pageNumber: number;
+    pageSize: number;
+    totalElements: number;
+    totalPages: number;
+    first: boolean;
+    last: boolean;
+    numberOfElements: number;
+  };
+}
+
+// 안심계좌 거래내역 리뷰 상태 변경 요청 타입
+export interface UpdateSafeAccountTransactionReviewStatusRequest {
+  reviewStatus: 'REVIEWED';
+  memo?: string;
+}
+
 // 축의금 API 함수들
 export const giftMoneyApi = {
   // 축의금 목록 조회 (필터링 + 페이징)
@@ -192,5 +228,29 @@ export const giftMoneyApi = {
   // 전체 통계 조회
   async getFullStatistics() {
     return apiClient.get<GiftMoneyStatisticsResponse>('/api/gift-money/statistics');
+  },
+
+  // 안심계좌 거래내역 조회
+  async getSafeAccountTransactions(params?: {
+    page?: number;
+    size?: number;
+  }) {
+    console.log('🔍 getSafeAccountTransactions API 호출:', params);
+    const searchParams = new URLSearchParams();
+    if (params?.page !== undefined) searchParams.append('page', params.page.toString());
+    if (params?.size !== undefined) searchParams.append('size', params.size.toString());
+    
+    const queryString = searchParams.toString();
+    const endpoint = queryString ? `/api/gift-money/safe-account-transactions?${queryString}` : '/api/gift-money/safe-account-transactions';
+    
+    console.log('🔍 API 엔드포인트:', endpoint);
+    const response = await apiClient.get<SafeAccountTransactionListResponse>(endpoint);
+    console.log('🔍 API 응답:', response);
+    return response;
+  },
+
+  // 안심계좌 거래내역 리뷰 상태 변경
+  async updateSafeAccountTransactionReviewStatus(transactionId: number, data: UpdateSafeAccountTransactionReviewStatusRequest) {
+    return apiClient.put(`/api/gift-money/safe-account-transactions/${transactionId}/review-status`, data);
   }
 };

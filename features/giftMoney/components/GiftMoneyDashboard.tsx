@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { GiftMoneyNewCard } from "./GiftMoneyNewCard";
+import { SafeAccountReviewCard } from "./SafeAccountReviewCard";
 import { GiftMoneyTotalCard } from "./GiftMoneyTotalCard";
 import { GiftMoneyPeopleCard } from "./GiftMoneyPeopleCard";
 import { GiftMoneyThanksCard } from "./GiftMoneyThanksCard";
@@ -12,9 +12,12 @@ interface GiftMoneyDashboardProps {
   totalCount: number;
   thanksSentCount: number;
   thanksNotSentCount: number;
+  safeAccountPendingCount?: number;
+  isSafeAccountReviewMode?: boolean;
   onAddNew?: () => void;
   onThanksClick?: () => void;
   onStatisticsClick?: () => void;
+  onSafeAccountReviewClick?: () => void;
 }
 
 export function GiftMoneyDashboard({
@@ -22,9 +25,12 @@ export function GiftMoneyDashboard({
   totalCount,
   thanksSentCount,
   thanksNotSentCount,
+  safeAccountPendingCount = 0,
+  isSafeAccountReviewMode = false,
   onAddNew,
   onThanksClick,
   onStatisticsClick,
+  onSafeAccountReviewClick,
 }: GiftMoneyDashboardProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [canSlideLeft, setCanSlideLeft] = useState(false);
@@ -107,8 +113,12 @@ export function GiftMoneyDashboard({
               transform: `translateX(-${currentSlide * 264}px)`, // 240px (카드 너비) + 24px (gap)
             }}
           >
-            {/* 1. 새로운 축의금 추가 카드 */}
-            <GiftMoneyNewCard onAddNew={onAddNew} />
+            {/* 1. 안심계좌 리뷰 카드 */}
+            <SafeAccountReviewCard 
+              pendingCount={safeAccountPendingCount}
+              isReviewMode={isSafeAccountReviewMode}
+              onCardClick={onSafeAccountReviewClick}
+            />
 
             {/* 2. 총 축의금 카드 */}
             <GiftMoneyTotalCard 
