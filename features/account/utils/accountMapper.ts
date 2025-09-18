@@ -22,6 +22,7 @@ export const mapAccountInfoResponse = (response: AccountInfoResponse): MeetingAc
     // 일일 한도 추가
     dailyLimit: Number(response.dailyLimit) || 5000000,
     isActive: response.isActive || true,
+    safeAccountNumber: response.safeAccountNumber, // 안심계좌번호 추가
   };
 };
 

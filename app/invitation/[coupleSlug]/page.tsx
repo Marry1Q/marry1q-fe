@@ -47,6 +47,7 @@ export default function PublicInvitationPage() {
           console.log('계좌번호 확인 - 신랑:', invitationData.groomAccount);
           console.log('계좌번호 확인 - 신부:', invitationData.brideAccount);
           console.log('accountInfo 확인:', invitationData.accountInfo);
+          console.log('모임통장 정보 확인:', invitationData.meetingAccountInfo);
           console.log('좌표 확인 - 위도:', invitationData.venueLatitude);
           console.log('좌표 확인 - 경도:', invitationData.venueLongitude);
           setInvitation(invitationData);
@@ -147,6 +148,7 @@ export default function PublicInvitationPage() {
     brideParentsDetail: invitation.brideParentsDetail,
     contact: invitation.contact,
     accountInfo: invitation.accountInfo,
+    meetingAccountInfo: invitation.meetingAccountInfo, // 모임통장 정보 추가
     uploadedPhotos: invitation.uploadedPhotos || [],
     selectedTemplate: invitation.selectedTemplate || 1,
     selectedColor: invitation.selectedColor || '#F0426B',

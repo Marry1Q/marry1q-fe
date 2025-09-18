@@ -138,6 +138,7 @@ export default function CreateInvitationPage() {
       brideParentsDetail: invitationData.brideParents,
       contact: invitationData.contact,
       accountInfo: invitationData.accountInfo,
+      meetingAccountInfo: invitationData.meetingAccountInfo, // 모임통장 정보 추가
       uploadedPhotos,
       selectedTemplate,
       selectedColor,
@@ -204,6 +205,7 @@ export default function CreateInvitationPage() {
         brideFatherName: invitationData.brideParents.father,
         brideMotherName: invitationData.brideParents.mother,
         brideAccount: invitationData.accountInfo.bride.accountNumber,
+        meetingAccountInfo: invitationData.meetingAccountInfo, // 모임통장 정보 추가
       };
       
       console.log('🔍 생성 페이지 위도/경도 디버깅:');

@@ -63,6 +63,7 @@ export interface MeetingAccount {
   cardNumber: string;
   dailyLimit: number;
   isActive: boolean;
+  safeAccountNumber?: string; // 안심계좌번호 추가
 }
 
 // 입금 요청 타입

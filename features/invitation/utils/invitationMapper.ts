@@ -42,6 +42,9 @@ export const mapApiResponseToInvitation = (apiResponse: InvitationResponse): Inv
     brideMotherName: apiResponse.brideMotherName,
     brideAccount: apiResponse.brideAccount,
     
+    // 모임통장 정보
+    meetingAccountInfo: apiResponse.meetingAccountInfo,
+    
     // 프론트엔드 전용 필드들 (기본값 설정)
     status: '완료', // 기본값, API에서 제공하지 않음
     views: apiResponse.totalViews || 0, // totalViews와 동일하게 설정
@@ -120,6 +123,7 @@ export const mapInvitationToCreateRequest = async (invitation: Partial<Invitatio
     brideFatherName: invitation.brideFatherName || invitation.brideParentsDetail?.father || '',
     brideMotherName: invitation.brideMotherName || invitation.brideParentsDetail?.mother || '',
     brideAccount: invitation.brideAccount || invitation.accountInfo?.bride?.accountNumber || '', // 계좌번호 매핑 수정
+    meetingAccountInfo: invitation.meetingAccountInfo, // 모임통장 정보 추가
   };
   
   console.log('🔍 매핑 후 데이터 (Create):', result);
@@ -153,6 +157,7 @@ export const mapInvitationToUpdateRequest = async (invitation: Partial<Invitatio
     brideFatherName: invitation.brideFatherName || invitation.brideParentsDetail?.father,
     brideMotherName: invitation.brideMotherName || invitation.brideParentsDetail?.mother,
     brideAccount: invitation.brideAccount || invitation.accountInfo?.bride?.accountNumber, // 계좌번호 매핑 수정
+    meetingAccountInfo: invitation.meetingAccountInfo, // 모임통장 정보 추가
   };
   
   console.log('🔍 매핑 후 데이터 (Update):', result);

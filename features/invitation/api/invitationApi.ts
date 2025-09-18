@@ -22,6 +22,7 @@ export interface CreateInvitationRequest {
   brideMotherName?: string;
   brideAccount?: string;
   mainImageUrl?: string; // 이미지 URL 추가
+  meetingAccountInfo?: string; // "하나 11023232-2323" 형태
 }
 
 // 청첩장 수정 요청 타입 (백엔드 UpdateInvitationRequest와 일치)
@@ -45,6 +46,7 @@ export interface UpdateInvitationRequest {
   brideFatherName?: string;
   brideMotherName?: string;
   brideAccount?: string;
+  meetingAccountInfo?: string; // "하나 11023232-2323" 형태
 }
 
 // 청첩장 응답 타입 (백엔드 InvitationResponse와 일치)
@@ -75,6 +77,7 @@ export interface InvitationResponse {
   brideFatherName?: string;
   brideMotherName?: string;
   brideAccount?: string;
+  meetingAccountInfo?: string; // "하나 11023232-2323" 형태
 }
 
 // 공개 청첩장 응답 타입 (InvitationResponse와 동일)

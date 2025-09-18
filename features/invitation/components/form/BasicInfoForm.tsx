@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Calendar24 } from "@/components/ui/Calendar24"
 import AddressSearchButton from "../card/location/AddressSearchButton"
 import dynamic from "next/dynamic"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
+import { useMeetingAccount, useFetchMeetingAccount } from "@/features/account/store/selectors"
 
 import { GroomInfoCard } from "../card/GroomInfoCard"
 import { BrideInfoCard } from "../card/BrideInfoCard"
@@ -29,6 +30,32 @@ export function BasicInfoForm({
   isCalendarOpen, 
   setIsCalendarOpen 
 }: BasicInfoFormProps) {
+  // store에서 모임통장 정보 가져오기
+  const meetingAccount = useMeetingAccount();
+  const fetchMeetingAccount = useFetchMeetingAccount();
+  
+  // 모임통장 정보가 없으면 자동으로 로드
+  useEffect(() => {
+    if (!meetingAccount) {
+      console.log('BasicInfoForm - 모임통장 정보가 없어서 자동 로드 시작');
+      fetchMeetingAccount();
+    }
+  }, [meetingAccount, fetchMeetingAccount]);
+  
+  // 모임통장 정보가 없으면 store에서 값을 가져와서 자동으로 채우기
+  useEffect(() => {
+    console.log('BasicInfoForm - meetingAccount:', meetingAccount);
+    console.log('BasicInfoForm - invitationData.meetingAccountInfo:', invitationData.meetingAccountInfo);
+    
+    if (!invitationData.meetingAccountInfo && meetingAccount) {
+      // 안심계좌번호가 있으면 사용, 없으면 일반 계좌번호 사용
+      const accountNumber = meetingAccount.safeAccountNumber || meetingAccount.accountNumber;
+      const meetingAccountInfo = `하나 ${accountNumber}`;
+      console.log('BasicInfoForm - 생성된 meetingAccountInfo:', meetingAccountInfo);
+      updateInvitationData("meetingAccountInfo", meetingAccountInfo);
+    }
+  }, [invitationData.meetingAccountInfo, meetingAccount, updateInvitationData]);
+
   // 프리뷰는 왼쪽 카드에만 표시하므로 폼 내 지도는 제거
   const handleAddressSelected = useCallback(({ address, lat, lng }: { address: string; lat?: number; lng?: number }) => {
     if (address !== undefined) updateInvitationData("venueAddress", address)

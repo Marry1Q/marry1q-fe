@@ -31,6 +31,9 @@ export interface Invitation {
   brideMotherName?: string;
   brideAccount?: string;
   
+  // 모임통장 정보
+  meetingAccountInfo?: string; // "하나 11023232-2323" 형태
+  
   // 프론트엔드 전용 필드들 (백엔드에서 제공하지 않는 필드)
   status?: string; // '완료', '초안' 등
   views?: number; // 일일 조회수

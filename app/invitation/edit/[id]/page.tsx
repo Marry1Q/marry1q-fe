@@ -357,6 +357,7 @@ export default function EditInvitationPage() {
         brideFatherName: invitationData.brideParents.father,
         brideMotherName: invitationData.brideParents.mother,
         brideAccount: invitationData.accountInfo.bride.accountNumber,
+        meetingAccountInfo: invitationData.meetingAccountInfo, // 모임통장 정보 추가
       };
       
       console.log('🔍 수정 페이지 위도/경도 디버깅:');

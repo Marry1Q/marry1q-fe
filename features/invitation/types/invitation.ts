@@ -44,6 +44,7 @@ export interface InvitationData {
       fieldId: string;
     };
   }
+  meetingAccountInfo?: string; // "하나 11023232-2323" 형태
 }
 
 export interface Template {
