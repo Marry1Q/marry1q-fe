@@ -115,6 +115,7 @@ export function CardLayout({ invitationData, uploadedPhotos, shareImage, isPrevi
             fieldId: "bride-account"
           }
         }}
+        meetingAccountInfo={invitationData.meetingAccountInfo}
         isPreview={isPreview}
       />
 

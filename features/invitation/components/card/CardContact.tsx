@@ -18,16 +18,18 @@ interface CardContactProps {
       fieldId: string;
     };
   };
+  meetingAccountInfo?: string;
   isPreview?: boolean;
 }
 
-export function CardContact({ contact, accountMessage, accountInfo, isPreview }: CardContactProps) {
+export function CardContact({ contact, accountMessage, accountInfo, meetingAccountInfo, isPreview }: CardContactProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   // 디버깅을 위한 로그
   console.log('CardContact - accountInfo:', accountInfo);
   console.log('CardContact - groom accountNumber:', accountInfo?.groom?.accountNumber);
   console.log('CardContact - bride accountNumber:', accountInfo?.bride?.accountNumber);
+  console.log('CardContact - meetingAccountInfo:', meetingAccountInfo);
 
   const handleCopy = async (text: string, field: string) => {
     try {
@@ -87,6 +89,14 @@ export function CardContact({ contact, accountMessage, accountInfo, isPreview }:
     }
   ] : [];
 
+  // 모임통장 계좌 데이터 구성
+  const meetingAccount = meetingAccountInfo ? [{
+    name: "부부 모임통장",
+    accountNumber: meetingAccountInfo, // "하나 11023232-2323" 형태 그대로 사용
+    bankName: "", // 이미 계좌번호에 포함됨
+    fieldId: "meeting-account"
+  }] : [];
+
   return (
     <section className="py-16 px-6 bg-white w-full max-w-sm mx-auto">
       <div className="w-full">
@@ -103,10 +113,15 @@ export function CardContact({ contact, accountMessage, accountInfo, isPreview }:
           />
         </div>
         
-        {/* 안내 메시지 */}
-        <div className="mb-8 text-left">
-          
-        </div>
+        {/* 부부 모임통장에 축의하기 (새로 추가) */}
+        {meetingAccount.length > 0 && (
+          <AccountSection
+            title="부부 모임통장에 축의하기"
+            accounts={meetingAccount}
+            onCopy={handleCopy}
+            copiedField={copiedField}
+          />
+        )}
         
         {/* 신랑측 계좌 */}
         {groomAccounts.length > 0 && (
