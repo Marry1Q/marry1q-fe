@@ -145,7 +145,7 @@ export function AccountTransaction({ transactions, currentPage, totalPages, onPa
         {/* 필터링 결과 표시 및 초기화 버튼 */}
         <div className="flex items-center justify-end text-sm text-gray-600 px-2">
           <span>
-            총 {totalCount}건 중 {filteredCount}건 표시
+            총 {filteredCount}건
             {isFilterApplied && (
               <span className="ml-2 text-blue-600">
                 (필터 적용됨)

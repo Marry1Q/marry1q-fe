@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Plus, Search } from "lucide-react";
+import { Download, Plus, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layout/MainLayout";
 import { Pagination } from "@/components/layout/Pagination";
@@ -68,6 +68,20 @@ export default function GiftMoneyPage() {
   const [filterThanksStatus, setFilterThanksStatus] = useState<"전체" | "완료" | "미완료">("전체");
   const [currentPage, setCurrentPage] = useState(0); // 백엔드는 0부터 시작
   const itemsPerPage = 10;
+
+  // 필터 적용 여부 및 초기화
+  const isFilterApplied = (
+    searchTerm.trim().length > 0 ||
+    filterRelationship !== "전체" ||
+    filterThanksStatus !== "전체"
+  );
+
+  const resetFilters = () => {
+    setSearchTerm("");
+    setFilterRelationship("전체");
+    setFilterThanksStatus("전체");
+    setCurrentPage(0);
+  };
 
   // 필터링된 축의금 목록
   const filteredGiftMoneyList = useFilteredGiftMoneyList(
@@ -234,7 +248,7 @@ export default function GiftMoneyPage() {
     try {
       const response = await giftMoneyApi.updateSafeAccountTransactionReviewStatus(
         transactionId, 
-        { reviewStatus: 'reviewed' }
+        { reviewStatus: 'REVIEWED' }
       );
       
       if (response.success) {
@@ -335,10 +349,10 @@ export default function GiftMoneyPage() {
             축의금 관리
           </h1>
           <div className="flex gap-3">
-            <Button variant="outline">
+            {/* <Button variant="outline">
               <Download className="w-4 h-4 mr-2" />
               엑셀 다운로드
-            </Button>
+            </Button> */}
           </div>
         </div>
 
@@ -368,7 +382,7 @@ export default function GiftMoneyPage() {
             <div className="space-y-6">
               {/* Filters */}
               <div className="flex gap-4">
-                <div className="relative flex-1 max-w-md">
+                <div className="relative flex-1 min-w-0">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
                     placeholder="이름으로 검색"
@@ -403,18 +417,24 @@ export default function GiftMoneyPage() {
                 </Select>
               </div>
 
-              {/* Results Count */}
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-600">
-                  총 {pagination.totalElements || 0}건의 축의금 내역
-                </p>
-                {pagination.totalPages > 1 && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">페이지</span>
-                    <span className="text-sm font-medium">
-                      {pagination.currentPage + 1} / {pagination.totalPages}
-                    </span>
-                  </div>
+              {/* Results Count (finance/page 스타일) */}
+              <div className="flex items-center justify-end text-sm text-gray-600 px-2">
+                <span>
+                  총 {pagination.totalElements || 0}건
+                  {isFilterApplied && (
+                    <span className="ml-2 text-blue-600">(필터 적용됨)</span>
+                  )}
+                </span>
+                {isFilterApplied && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={resetFilters}
+                    className="flex items-center gap-1 text-gray-600 hover:text-gray-800 ml-4"
+                  >
+                    <X className="w-3 h-3" />
+                    필터 초기화
+                  </Button>
                 )}
               </div>
 

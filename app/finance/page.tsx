@@ -470,7 +470,7 @@ export default function CoupleFinancePage() {
               {/* 필터링 결과 표시 및 초기화 버튼 */}
               <div className="flex items-center justify-end text-sm text-gray-600 px-2">
                 <span>
-                  총 {transactions.length}건 중 {transactions.length}건 표시
+                  총 {transactions.length}건
                   {isFilterApplied && (
                     <span className="ml-2 text-blue-600">
                       (필터 적용됨)

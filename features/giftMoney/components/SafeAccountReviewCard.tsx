@@ -18,7 +18,7 @@ export function SafeAccountReviewCard({
 
   return (
     <DashboardInfoCard
-      title="축의금 입금 확인"
+      title="미리뷰 내역"
       subtitle={`${pendingCount}건`}
       description={isAllReviewed
         ? "모든 내역을 리뷰하였습니다!"
