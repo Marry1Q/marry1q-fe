@@ -3,14 +3,22 @@
 import { GiftMoneyForm } from "@/features/giftMoney/components/GiftMoneyForm";
 import { colors } from "@/constants/colors";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { giftMoneyApi, CreateGiftMoneyRequest } from "@/features/giftMoney/api/giftMoneyApi";
 import { useFetchSummaryStatistics, useFetchFullStatistics } from "@/features/giftMoney/store/selectors";
+import { useEffect, useState } from "react";
 
 export default function CreateGiftMoneyPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const fetchSummaryStatistics = useFetchSummaryStatistics();
   const fetchFullStatistics = useFetchFullStatistics();
+
+  // 안심계좌 리뷰 데이터 확인
+  const safeAccountTransactionId = searchParams.get('safeAccountTransactionId');
+  const safeAccountDescription = searchParams.get('description');
+  const safeAccountAmount = searchParams.get('amount');
+  const safeAccountDate = searchParams.get('transactionDate');
 
   const handleSubmit = async (data: any) => {
     try {
@@ -38,6 +46,14 @@ export default function CreateGiftMoneyPage() {
         };
         
         await giftMoneyApi.updateThanksStatus(response.data!.giftMoneyId, thanksData);
+      }
+
+      // 안심계좌 거래내역에서 가져온 데이터인 경우 리뷰 상태 변경
+      if (safeAccountTransactionId) {
+        await giftMoneyApi.updateSafeAccountTransactionReviewStatus(
+          parseInt(safeAccountTransactionId), 
+          { reviewStatus: 'REVIEWED' }
+        );
       }
       
       toast.success("축의금이 등록되었습니다!", {
@@ -74,10 +90,24 @@ export default function CreateGiftMoneyPage() {
     router.back();
   };
 
+  // 안심계좌 데이터를 초기값으로 설정
+  const initialData = safeAccountTransactionId ? {
+    name: safeAccountDescription || "",
+    amount: safeAccountAmount ? parseInt(safeAccountAmount).toLocaleString() : "",
+    relationship: "",
+    source: "transfer", // 계좌이체로 고정
+    phone: "",
+    address: "",
+    memo: "",
+    date: safeAccountDate ? new Date(safeAccountDate) : new Date(),
+    thanksCompleted: false
+  } : undefined;
+
   return (
     <GiftMoneyForm
       onSubmit={handleSubmit}
       onCancel={handleCancel}
+      initialData={initialData}
     />
   );
 } 

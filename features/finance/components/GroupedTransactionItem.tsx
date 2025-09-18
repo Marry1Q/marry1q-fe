@@ -139,7 +139,7 @@ export function GroupedTransactionItem({
                     onClick={() => onImmediateReviewComplete?.(transaction.transactionId)}
                     disabled={isReviewCompleting}
                   >
-                    {isReviewCompleting ? '리뷰 완료 중...' : '즉시 리뷰 완료'}
+                    {isReviewCompleting ? '리뷰 완료 중...' : '리뷰 완료'}
                   </DropdownMenuItem>
                 </>
               ) : (
