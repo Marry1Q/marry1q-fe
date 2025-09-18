@@ -90,7 +90,7 @@ export function GroupedTransactionItem({
           />
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <p className="font-medium">{transaction.description}</p>
+              <p className="font-medium" style={{fontFamily: 'Hana2-CM'}}>{transaction.description}</p>
               <span className="text-sm text-gray-500">•</span>
               <span className="text-sm text-gray-500">{transaction.categoryName}</span>
               {formattedTime && (
