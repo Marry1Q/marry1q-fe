@@ -4,19 +4,21 @@ interface GiftMoneyPeopleCardProps {
   totalCount: number;
   className?: string;
   onCardClick?: () => void;
+  isStatisticsActive?: boolean;
 }
 
 export function GiftMoneyPeopleCard({
   totalCount,
   className = "w-60 h-60",
   onCardClick,
+  isStatisticsActive = false,
 }: GiftMoneyPeopleCardProps) {
   return (
     <DashboardInfoCard
       title="총 인원"
       subtitle={`${totalCount}명`}
-      description="축의금 인원 수를 확인하세요"
-      actionText="자세히 보기"
+      description={isStatisticsActive ? "전체 내역을 확인하세요" : "축의금 인원 수를 확인하세요"}
+      actionText={isStatisticsActive ? "전체 내역 보기" : "자세히 보기"}
       variant="default"
       color="yellow"
       onClick={onCardClick}

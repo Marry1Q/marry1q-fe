@@ -306,6 +306,10 @@ export default function CoupleFinancePage() {
     // 해당 리뷰 대기 거래내역 찾기
     const reviewTransaction = reviewPendingTransactions.find((t: any) => t.transactionId === transactionId);
     
+    console.log('🔍 리뷰 거래내역 데이터:', reviewTransaction);
+    console.log('🕐 transactionTime:', reviewTransaction?.transactionTime);
+    console.log('📅 transactionDate:', reviewTransaction?.transactionDate);
+    
     if (reviewTransaction) {
       // 모든 리뷰 데이터를 URL 파라미터로 전달
       const params = new URLSearchParams({
@@ -314,12 +318,13 @@ export default function CoupleFinancePage() {
         description: reviewTransaction.description,
         type: reviewTransaction.type === 'INCOME' ? 'deposit' : 'withdraw',
         date: reviewTransaction.transactionDate,
-        time: reviewTransaction.transactionTime,
+        time: reviewTransaction.transactionTime || '',
         memo: reviewTransaction.memo || '',
         fromName: reviewTransaction.userName,
         toName: reviewTransaction.userName
       });
       
+      console.log('📤 전달되는 파라미터:', params.toString());
       window.location.href = `/finance/create?${params.toString()}`;
     } else {
       toast.error('리뷰 대기 거래내역을 찾을 수 없습니다.');
@@ -408,7 +413,7 @@ export default function CoupleFinancePage() {
         {/* Budget Overview */}
         <main className="container mx-auto p-4">
           <h1 className="text-3xl mb-6" style={{ fontFamily: "Hana2-CM" }}>
-            예산관리
+            가계부
           </h1>
 
           {/* Finance Dashboard */}

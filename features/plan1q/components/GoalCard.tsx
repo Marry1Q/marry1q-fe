@@ -222,7 +222,7 @@ export function GoalCard({
       </div>
     </CardContent>
 
-    {onClick && (
+    {/* {onClick && (
       <CardFooter>
         <Button
           variant="primary-hover"
@@ -235,7 +235,7 @@ export function GoalCard({
           <ChevronRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" />
         </Button>
       </CardFooter>
-    )}
+    )} */}
   </Card>
   );
 }

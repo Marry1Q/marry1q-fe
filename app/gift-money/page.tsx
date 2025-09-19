@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AddButton } from "@/components/ui/AddButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Plus, Search, X } from "lucide-react";
+import { Download, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layout/MainLayout";
 import { Pagination } from "@/components/layout/Pagination";
@@ -41,10 +42,19 @@ export default function GiftMoneyPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   
+  // 총 인원 카드로 통계 탭에 진입했는지 추적하는 상태
+  const [enteredViaPeopleCard, setEnteredViaPeopleCard] = useState(false);
+  
+  // 총 축의금 카드로 통계 탭에 진입했는지 추적하는 상태
+  const [enteredViaTotalCard, setEnteredViaTotalCard] = useState(false);
+  
   // 안심계좌 관련 상태
   const [isSafeAccountReviewMode, setIsSafeAccountReviewMode] = useState(false);
   const [safeAccountTransactions, setSafeAccountTransactions] = useState<SafeAccountTransactionResponse[]>([]);
   const [isSafeAccountLoading, setIsSafeAccountLoading] = useState(false);
+  
+  // 감사인사 필터 토글 상태
+  const [isThanksFiltered, setIsThanksFiltered] = useState(false);
   
   // Store에서 상태 가져오기
   const giftMoneyList = useGiftMoneyList();
@@ -81,6 +91,7 @@ export default function GiftMoneyPage() {
     setFilterRelationship("전체");
     setFilterThanksStatus("전체");
     setCurrentPage(0);
+    setIsThanksFiltered(false); // 감사인사 필터 상태도 초기화
   };
 
   // 필터링된 축의금 목록
@@ -160,6 +171,9 @@ export default function GiftMoneyPage() {
   useEffect(() => {
     setCurrentPage(0); // 페이지 리셋
     handleFetchGiftMoneyList();
+    
+    // 감사인사 필터 상태 동기화
+    setIsThanksFiltered(filterThanksStatus === "미완료");
   }, [searchTerm, filterRelationship, filterThanksStatus]);
 
   // 페이지 변경 시 목록 재조회
@@ -349,10 +363,7 @@ export default function GiftMoneyPage() {
             축의금 관리
           </h1>
           <div className="flex gap-3">
-            {/* <Button variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              엑셀 다운로드
-            </Button> */}
+            <AddButton href="/gift-money/create" label="추가하기" />
           </div>
         </div>
 
@@ -361,13 +372,48 @@ export default function GiftMoneyPage() {
         {/* Gift Money Dashboard */}
         <GiftMoneyDashboard
           {...dashboardData}
+          isStatisticsActive={activeTab === "statistics"}
+          isThanksFiltered={isThanksFiltered}
           onAddNew={handleAddNew}
           onThanksClick={() => {
-            setFilterThanksStatus("미완료");
+            // 토글 로직: 현재 미완료 필터가 적용되어 있으면 전체로, 아니면 미완료로
+            if (isThanksFiltered) {
+              setFilterThanksStatus("전체");
+              setIsThanksFiltered(false);
+            } else {
+              setFilterThanksStatus("미완료");
+              setIsThanksFiltered(true);
+            }
             setActiveTab("overview");
           }}
-          onStatisticsClick={() => {
-            setActiveTab("statistics");
+          onTotalCardClick={() => {
+            // 총 축의금 카드: 양방향 토글
+            if (activeTab === "overview") {
+              setActiveTab("statistics");
+              setEnteredViaTotalCard(true); // 총 축의금 카드로 진입했음을 기록
+              setEnteredViaPeopleCard(false); // 다른 카드로 진입했으므로 false
+            } else if (activeTab === "statistics" && enteredViaTotalCard) {
+              setActiveTab("overview");
+              setEnteredViaTotalCard(false);
+            }
+          }}
+          onPeopleCardClick={() => {
+            // 총 인원 카드: 양방향 토글
+            if (activeTab === "overview") {
+              setActiveTab("statistics");
+              setEnteredViaPeopleCard(true); // 총 인원 카드로 진입했음을 기록
+              setEnteredViaTotalCard(false); // 다른 카드로 진입했으므로 false
+            } else if (activeTab === "statistics") {
+              if (enteredViaPeopleCard) {
+                // 총 인원 카드로 진입한 경우 토글
+                setActiveTab("overview");
+                setEnteredViaPeopleCard(false);
+              } else {
+                // 다른 방법으로 진입한 경우 상태만 변경
+                setEnteredViaPeopleCard(true);
+                setEnteredViaTotalCard(false);
+              }
+            }
           }}
           onSafeAccountReviewClick={handleSafeAccountReviewClick}
         />

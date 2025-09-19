@@ -133,7 +133,7 @@ export function DashboardInfoCard({
   };
 
   const [isHovered, setIsHovered] = useState(false);
-  const isHoverLike = (!disableHover && active) || (!disableHover && isHovered);
+  const isHoverLike = !disableHover && (isHovered || active);
 
   const getTextColorClasses = () => {
     if (variant === "colored") {
@@ -145,8 +145,8 @@ export function DashboardInfoCard({
       };
     }
     
-    // 호버 상태(혹은 active)이고 색상이 있는 경우 흰색 텍스트 사용
-    if (isHoverLike && color) {
+    // active 상태이거나 호버 상태이고 색상이 있는 경우 흰색 텍스트 사용
+    if ((active || isHoverLike) && color) {
       return {
         title: "text-white transition-colors duration-300",
         subtitle: "text-white transition-colors duration-300",
@@ -177,7 +177,7 @@ export function DashboardInfoCard({
           variant === "default" && "bg-white",
           variant === "colored" && "text-white"
         )}
-        style={isHoverLike ? getHoverColorStyle() : getColorStyle()}
+        style={active ? getHoverColorStyle() : (isHoverLike ? getHoverColorStyle() : getColorStyle())}
         onMouseEnter={() => !disableHover && setIsHovered(true)}
         onMouseLeave={() => !disableHover && setIsHovered(false)}
       >

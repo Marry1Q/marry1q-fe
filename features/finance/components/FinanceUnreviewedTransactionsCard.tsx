@@ -22,7 +22,7 @@ export function FinanceUnreviewedTransactionsCard({
   // 미리뷰 내역이 0건일 때와 그렇지 않을 때를 구분
   const isAllReviewed = unreviewedCount === 0;
 
-  const isActive = !isAllReviewed && (isHovered || isLockedHover);
+  const isActive = !isAllReviewed && (isHovered || isLockedHover || isReviewMode);
 
   const handleClick = () => {
     if (isAllReviewed) return;
