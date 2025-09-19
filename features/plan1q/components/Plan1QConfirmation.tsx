@@ -16,7 +16,7 @@ import { colors } from "@/constants/colors";
 import { usePlan1QStore } from "@/lib/store/plan1qStore";
 import { usePlan1QStore as usePlan1QFeatureStore } from "@/features/plan1q/store/plan1qStore";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { plan1qApi } from "../api/plan1qApi";
 import { Plan1QGoalCreateRequest } from "../types";
@@ -127,6 +127,7 @@ export function Plan1QConfirmation({
     }
   }, [investmentProfile, fetchInvestmentProfile]);
 
+
   // 추천 결과가 없으면 로딩 상태 표시
   if (!recommendationData) {
     return (
@@ -145,7 +146,11 @@ export function Plan1QConfirmation({
 
   const handlePlan1QCreate = async () => {
     try {
-      setIsRedirecting(true); // 버튼 클릭 즉시 로딩 화면 표시
+      setIsRedirecting(true);
+      
+      // 최소 로딩 시간 보장 (사용자가 로딩 화면을 볼 수 있도록)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setError(null);
 
       if (!recommendationResponse) {
@@ -168,11 +173,7 @@ export function Plan1QConfirmation({
         aiExplanation: recommendationResponse.aiExplanation,
       };
 
-      console.log("🚀 Plan1Q 목표 생성 요청:", request);
-
       const response = await plan1qApi.createGoal(request);
-      
-      console.log("✅ Plan1Q 목표 생성 응답:", response);
 
       if (response.success && response.data) {
         setApiResponse(response.data);
@@ -180,8 +181,10 @@ export function Plan1QConfirmation({
         // 바로 상세 페이지로 이동
         const createdGoalId = response.data.goalId;
         if (createdGoalId) {
-          // 바로 상세 페이지로 이동 (토스트는 상세 페이지에서 표시)
+          // 추가 로딩 시간 (총 2초 로딩)
+          await new Promise(resolve => setTimeout(resolve, 1000));
           router.push(`/plan1q/${createdGoalId}?created=true`);
+          // 성공 시에는 setIsRedirecting(false) 호출하지 않음
         } else {
           // goalId가 없으면 기존 로직 실행
           setIsRedirecting(false); // 로딩 해제
@@ -191,7 +194,6 @@ export function Plan1QConfirmation({
         throw new Error(response.message || "Plan1Q 목표 생성에 실패했습니다.");
       }
     } catch (error) {
-      console.error("❌ Plan1Q 목표 생성 에러:", error);
       const errorMessage = error instanceof Error ? error.message : "Plan1Q 목표 생성에 실패했습니다.";
       setError(errorMessage);
       setIsRedirecting(false); // 에러 시 로딩 해제
@@ -281,7 +283,18 @@ export function Plan1QConfirmation({
     <>
       {/* 전체 화면 로딩 오버레이 */}
       {isRedirecting && (
-        <div className="fixed inset-0 bg-gray-50 flex items-center justify-center z-[9999]">
+        <div 
+          className="fixed inset-0 bg-gray-50 flex items-center justify-center"
+          style={{
+            zIndex: 999999,
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: '#f9fafb'
+          }}
+        >
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#008485] mx-auto mb-4"></div>
             <p className="text-gray-600" style={{ fontFamily: "Hana2-CM" }}>

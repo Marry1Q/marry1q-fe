@@ -14,9 +14,12 @@ interface GiftMoneyDashboardProps {
   thanksNotSentCount: number;
   safeAccountPendingCount?: number;
   isSafeAccountReviewMode?: boolean;
+  isStatisticsActive?: boolean;
+  isThanksFiltered?: boolean; // 감사인사 필터 상태
   onAddNew?: () => void;
   onThanksClick?: () => void;
-  onStatisticsClick?: () => void;
+  onTotalCardClick?: () => void;
+  onPeopleCardClick?: () => void;
   onSafeAccountReviewClick?: () => void;
 }
 
@@ -27,9 +30,12 @@ export function GiftMoneyDashboard({
   thanksNotSentCount,
   safeAccountPendingCount = 0,
   isSafeAccountReviewMode = false,
+  isStatisticsActive = false,
+  isThanksFiltered = false,
   onAddNew,
   onThanksClick,
-  onStatisticsClick,
+  onTotalCardClick,
+  onPeopleCardClick,
   onSafeAccountReviewClick,
 }: GiftMoneyDashboardProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -123,13 +129,15 @@ export function GiftMoneyDashboard({
             {/* 2. 총 축의금 카드 */}
             <GiftMoneyTotalCard 
               totalAmount={totalAmount} 
-              onCardClick={onStatisticsClick}
+              onCardClick={onTotalCardClick}
+              isStatisticsActive={isStatisticsActive}
             />
 
             {/* 3. 총 인원 카드 */}
             <GiftMoneyPeopleCard 
               totalCount={totalCount} 
-              onCardClick={onStatisticsClick}
+              onCardClick={onPeopleCardClick}
+              isStatisticsActive={isStatisticsActive}
             />
 
             {/* 4. 미완료 감사연락 카드 */}
@@ -137,6 +145,7 @@ export function GiftMoneyDashboard({
               thanksSentCount={thanksSentCount}
               thanksNotSentCount={thanksNotSentCount}
               onThanksClick={onThanksClick}
+              isFiltered={isThanksFiltered}
             />
           </div>
         </div>

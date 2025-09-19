@@ -5,6 +5,7 @@ interface GiftMoneyThanksCardProps {
   thanksNotSentCount: number;
   onThanksClick?: () => void;
   className?: string;
+  isFiltered?: boolean; // 미완료 필터가 적용되었는지 여부
 }
 
 export function GiftMoneyThanksCard({
@@ -12,6 +13,7 @@ export function GiftMoneyThanksCard({
   thanksNotSentCount,
   onThanksClick,
   className = "w-60 h-60",
+  isFiltered = false,
 }: GiftMoneyThanksCardProps) {
   const thanksProgress = (thanksSentCount + thanksNotSentCount) > 0 
     ? (thanksSentCount / (thanksSentCount + thanksNotSentCount)) * 100 
@@ -25,6 +27,7 @@ export function GiftMoneyThanksCard({
       actionText="미완료 보기"
       variant="default"
       color="red"
+      active={isFiltered} // 토글 상태에 따라 active prop 설정
       onClick={onThanksClick}
       className={className}
       backgroundImage={{

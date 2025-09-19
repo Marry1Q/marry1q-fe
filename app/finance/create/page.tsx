@@ -125,13 +125,51 @@ export default function AddTransactionPage() {
       }
     : null;
 
+  // 디버깅: 받은 파라미터 확인
+  console.log('📥 가계부 작성 페이지 - 받은 파라미터:', {
+    reviewId,
+    reviewAmount,
+    reviewDescription,
+    reviewType,
+    reviewDate,
+    reviewTime,
+    reviewMemo,
+    reviewFromName,
+    reviewToName
+  });
+
   // 리뷰 데이터가 있으면 해당 데이터로 초기화, 없으면 기본값 사용
   const initialType = reviewType === 'deposit' ? 'income' : (reviewType === 'withdraw' ? 'expense' : (isEditMode ? editTransaction?.type || "expense" : "expense"));
   const initialAmount = reviewAmount ? formatAmount(reviewAmount) : (isEditMode ? formatAmount(editTransaction?.amount || "") : "");
   const initialDescription = reviewDescription || (isEditMode ? editTransaction?.description || "" : "");
   const initialMemo = reviewMemo || (isEditMode ? editTransaction?.memo || "" : "");
-  const initialDate = reviewDate && reviewTime ? new Date(`${reviewDate}T${reviewTime}`) : (isEditMode ? editTransaction?.date || new Date() : new Date());
+  
+  // 날짜와 시간을 안전하게 처리
+  let initialDate = new Date();
+  if (reviewDate && reviewTime) {
+    // ISO 형식으로 변환: "2025-09-16T11:03:44"
+    const isoString = `${reviewDate}T${reviewTime}`;
+    initialDate = new Date(isoString);
+    
+    // 날짜가 유효하지 않은 경우 현재 시간으로 대체
+    if (isNaN(initialDate.getTime())) {
+      console.warn('⚠️ 잘못된 날짜 형식, 현재 시간으로 대체:', isoString);
+      initialDate = new Date();
+    }
+  } else if (isEditMode && editTransaction?.date) {
+    initialDate = editTransaction.date;
+  }
+  
   const initialUser = isEditMode ? editTransaction?.user || "" : ""; // 빈 문자열로 시작
+
+  console.log('📅 초기 날짜 설정:', {
+    reviewDate,
+    reviewTime,
+    isoString: reviewDate && reviewTime ? `${reviewDate}T${reviewTime}` : null,
+    initialDate: initialDate.toISOString(),
+    isValidDate: !isNaN(initialDate.getTime()),
+    hasTime: !!reviewTime
+  });
 
   const [transactionType, setTransactionType] = useState(initialType);
   const [amount, setAmount] = useState(initialAmount);
@@ -474,6 +512,7 @@ export default function AddTransactionPage() {
             <CardContent>
               <Calendar24
                 date={date}
+                time={reviewTime || undefined}
                 onDateChange={setDate}
                 onTimeChange={(time) => {
                   // 시간 변경은 onDateChange에서 이미 처리됨

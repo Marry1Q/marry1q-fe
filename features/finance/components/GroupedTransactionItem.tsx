@@ -74,11 +74,18 @@ export function GroupedTransactionItem({
   const colorName = transaction.colorName || getDefaultColor(transaction.categoryName || '기타');
   const formattedTime = transaction.transactionTime ? formatTime(transaction.transactionTime) : null;
 
+  const handleItemClick = () => {
+    if (isReviewMode && onRegisterToFinance) {
+      onRegisterToFinance(transaction.transactionId);
+    }
+  };
+
   return (
     <div 
       className={`p-4 hover:bg-gray-50 transition-colors ${
         isReviewMode ? 'cursor-pointer' : ''
       }`}
+      onClick={handleItemClick}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
